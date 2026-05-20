@@ -5,6 +5,7 @@ import { hashPassword } from "@/lib/auth/password";
 import { createSession } from "@/lib/auth/session";
 import { rateLimit } from "@/lib/rate-limit/redis";
 import { safeError } from "@/lib/security/errors";
+import { redirectToPath } from "@/lib/utils/redirect";
 
 const SignupSchema = z.object({ email: z.string().email(), password: z.string().min(8), name: z.string().optional() });
 
@@ -25,7 +26,7 @@ export async function POST(request: Request) {
     const org = await prisma.organizationMember.findFirstOrThrow({ where: { userId: user.id } });
     await prisma.auditLog.create({ data: { organizationId: org.organizationId, actorUserId: user.id, action: "signup" } });
     await createSession(user.id);
-    return NextResponse.redirect(new URL("/dashboard", request.url), 303);
+    return redirectToPath("/dashboard");
   } catch (error) {
     return safeError(error, "Signup failed");
   }

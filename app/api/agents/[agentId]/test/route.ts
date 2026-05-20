@@ -1,8 +1,8 @@
-import { NextResponse } from "next/server";
 import { requireAgentAccess, requireUser } from "@/lib/auth/access";
 import { prisma } from "@/lib/db/prisma";
 import { toJson } from "@/lib/db/json";
 import { runAgentChat } from "@/lib/agents/runtime";
+import { redirectToPath } from "@/lib/utils/redirect";
 
 export async function POST(request: Request, { params }: { params: Promise<{ agentId: string }> }) {
   const { agentId } = await params;
@@ -12,5 +12,5 @@ export async function POST(request: Request, { params }: { params: Promise<{ age
   const message = String(form.get("message") || "");
   const output = await runAgentChat(agent.id, { message, source: "DASHBOARD_TEST" }, user.id);
   await prisma.agentTestRun.create({ data: { organizationId: agent.organizationId, agentId: agent.id, input: message, output: toJson(output) } });
-  return NextResponse.redirect(new URL(`/dashboard/agents/${agent.id}/test`, request.url), 303);
+  return redirectToPath(`/dashboard/agents/${agent.id}/test`);
 }

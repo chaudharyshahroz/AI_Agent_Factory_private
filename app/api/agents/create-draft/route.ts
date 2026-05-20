@@ -5,6 +5,7 @@ import { prisma } from "@/lib/db/prisma";
 import { toJson } from "@/lib/db/json";
 import { getCategory } from "@/lib/categories/catalog";
 import { generateBlueprint } from "@/lib/agents/generate-blueprint";
+import { redirectToPath } from "@/lib/utils/redirect";
 
 const Schema = z.object({ category: z.string(), templateSlug: z.string() });
 
@@ -23,5 +24,5 @@ export async function POST(request: Request) {
   await prisma.agentBlueprint.create({ data: { organizationId: org.id, agentId: agent.id, content: toJson(blueprint), promptMetadata: toJson({ source: "create-agent-wizard" }) } });
   await prisma.agentTestCase.createMany({ data: (blueprint.testCases ?? []).map((testCase) => ({ organizationId: org.id, agentId: agent.id, name: testCase.name, input: testCase.userMessage, expected: testCase.expectedBehavior, metadata: toJson(testCase) })) });
   await prisma.auditLog.create({ data: { organizationId: org.id, actorUserId: user.id, action: "agent_create", targetType: "agent", targetId: agent.id } });
-  return NextResponse.redirect(new URL(`/dashboard/agents/${agent.id}/blueprint`, request.url), 303);
+  return redirectToPath(`/dashboard/agents/${agent.id}/blueprint`);
 }

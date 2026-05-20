@@ -3,6 +3,7 @@ import { requireAgentAccess, requireUser } from "@/lib/auth/access";
 import { prisma } from "@/lib/db/prisma";
 import { documentPath, saveDocumentFile, validateUpload } from "@/lib/storage/local";
 import { fileProcessingQueue } from "@/lib/queue/queues";
+import { redirectToPath } from "@/lib/utils/redirect";
 
 export async function POST(request: Request) {
   const user = await requireUser();
@@ -18,5 +19,5 @@ export async function POST(request: Request) {
   await prisma.document.update({ where: { id: doc.id }, data: { storagePath } });
   await fileProcessingQueue.add("process-document", { documentId: doc.id });
   await prisma.auditLog.create({ data: { organizationId: agent.organizationId, actorUserId: user.id, action: "document_upload", targetType: "document", targetId: doc.id } });
-  return NextResponse.redirect(new URL(`/dashboard/agents/${agent.id}/knowledge`, request.url), 303);
+  return redirectToPath(`/dashboard/agents/${agent.id}/knowledge`);
 }

@@ -5,6 +5,7 @@ import { verifyPassword } from "@/lib/auth/password";
 import { createSession } from "@/lib/auth/session";
 import { rateLimit } from "@/lib/rate-limit/redis";
 import { safeError } from "@/lib/security/errors";
+import { redirectToPath } from "@/lib/utils/redirect";
 
 const LoginSchema = z.object({ email: z.string().email(), password: z.string().min(1) });
 
@@ -18,7 +19,7 @@ export async function POST(request: Request) {
     await createSession(user.id);
     const organizationId = user.memberships[0]?.organizationId;
     if (organizationId) await prisma.auditLog.create({ data: { organizationId, actorUserId: user.id, action: "login" } });
-    return NextResponse.redirect(new URL("/dashboard", request.url), 303);
+    return redirectToPath("/dashboard");
   } catch (error) {
     return safeError(error, "Login failed");
   }
