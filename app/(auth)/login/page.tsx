@@ -1,10 +1,15 @@
 import Link from "next/link";
+import { headers } from "next/headers";
 import { LockKeyhole, Sparkles } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
-export default function LoginPage() {
+export default async function LoginPage() {
+  const host = (await headers()).get("host")?.split(":")[0].toLowerCase();
+  const adminHost = (process.env.ADMIN_DOMAIN || (process.env.APP_DOMAIN ? `admin.${process.env.APP_DOMAIN}` : "admin.categent.com")).toLowerCase();
+  const redirectTo = host === adminHost ? "/admin" : "/dashboard";
+
   return (
     <main className="categent-gradient flex min-h-screen items-center justify-center px-4 py-10">
       <Card className="w-full max-w-md border-white/10 bg-white/[0.08] text-white shadow-glow">
@@ -12,6 +17,7 @@ export default function LoginPage() {
         <h1 className="mt-5 text-3xl font-bold">Log in to Categent</h1>
         <p className="mt-2 text-sm text-slate-300">Monitor agents, approvals, knowledge, tests, and deployments.</p>
         <form action="/api/auth/login" method="post" className="mt-6 grid gap-4">
+          <input type="hidden" name="redirectTo" value={redirectTo} />
           <Input name="email" type="email" placeholder="Email" required className="border-white/10 bg-white/10 text-white placeholder:text-slate-400" />
           <Input name="password" type="password" placeholder="Password" required className="border-white/10 bg-white/10 text-white placeholder:text-slate-400" />
           <label className="flex items-center gap-2 text-sm text-slate-300"><input type="checkbox" name="remember" className="rounded" /> Remember this device</label>

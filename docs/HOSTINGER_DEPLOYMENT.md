@@ -46,6 +46,7 @@ Use these production values as the shape, replacing passwords and hosts with you
 ```bash
 APP_NAME=Categent
 APP_DOMAIN=categent.com
+ADMIN_DOMAIN=admin.categent.com
 APP_URL=https://categent.com
 PORT=3010
 HOSTNAME=0.0.0.0
@@ -53,6 +54,13 @@ INITIAL_SUPER_ADMIN_EMAIL=you@example.com
 DATABASE_URL=postgresql://agentfactory:password@categent-pgvector:5432/agentfactory?schema=public
 REDIS_URL=redis://default:password@categent-redis:6379
 ```
+
+For the admin subdomain:
+
+1. Add a DNS `A` record for `admin.categent.com` pointing to the same VPS IP.
+2. In Dokploy, add `admin.categent.com` as an additional domain for the same Categent app service on internal port `3010`.
+3. Keep `ADMIN_DOMAIN=admin.categent.com` in the Categent service environment.
+4. Visit `https://admin.categent.com`; it rewrites to the protected `/admin` area automatically.
 
 ## Updates
 
