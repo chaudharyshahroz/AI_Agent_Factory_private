@@ -8,6 +8,7 @@ datasource db {
 }
 
 enum Role {
+  SUPER_ADMIN
   OWNER
   ADMIN
   MEMBER
@@ -75,6 +76,8 @@ model User {
   memberships    OrganizationMember[]
   approvedItems  HumanApproval[] @relation("ApprovedBy")
   rejectedItems  HumanApproval[] @relation("RejectedBy")
+  apiKeys        ApiKey[]
+  notifications  Notification[]
 }
 
 model Organization {
@@ -106,6 +109,8 @@ model Organization {
   auditLogs              AuditLog[]
   leads                  Lead[]
   bookings               Booking[]
+  apiKeys                ApiKey[]
+  notifications          Notification[]
 }
 
 model OrganizationMember {
@@ -159,7 +164,14 @@ model CategoryPack {
   slug        String   @unique
   name        String
   description String
+  icon        String?
+  status      String   @default("active")
+  seoTitle    String?
+  seoDescription String?
+  metadata    Json?
+  sortOrder   Int      @default(0)
   createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
   templates   AgentTemplate[]
   questions   SetupQuestion[]
 }
@@ -170,7 +182,14 @@ model AgentTemplate {
   slug           String
   name           String
   description    String
+  goal           String?
+  setupTime      String?
+  approvalLevel  String?
+  recommendedTools Json?
+  metadata       Json?
+  sortOrder      Int          @default(0)
   createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
   categoryPack   CategoryPack @relation(fields: [categoryPackId], references: [id], onDelete: Cascade)
   agents         Agent[]
 
@@ -196,6 +215,11 @@ model ToolDefinition {
   requiresApproval Boolean  @default(false)
   enabledByDefault Boolean  @default(true)
   inputSchema      Json
+  outputSchema     Json?
+  icon             String?
+  documentation    String?
+  metadata         Json?
+  updatedAt        DateTime @updatedAt
   createdAt        DateTime @default(now())
 }
 
@@ -487,4 +511,89 @@ model Booking {
   createdAt      DateTime     @default(now())
   organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   agent          Agent?       @relation(fields: [agentId], references: [id], onDelete: SetNull)
+}
+
+model ContactLead {
+  id               String   @id @default(uuid()) @db.Uuid
+  name             String
+  email            String
+  company          String?
+  companySize      String?
+  categoryInterest String?
+  useCase          String?
+  message          String?
+  status           String   @default("new")
+  notes            String?
+  metadata         Json?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@index([email])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model AdminContentBlock {
+  id          String   @id @default(uuid()) @db.Uuid
+  key         String   @unique
+  title       String
+  content     Json
+  status      String   @default("active")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model FeatureFlag {
+  id          String   @id @default(uuid()) @db.Uuid
+  key         String   @unique
+  name        String
+  description String?
+  enabled     Boolean  @default(false)
+  metadata    Json?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model SystemSetting {
+  id          String   @id @default(uuid()) @db.Uuid
+  key         String   @unique
+  value       Json
+  isSecret    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model ApiKey {
+  id             String       @id @default(uuid()) @db.Uuid
+  organizationId String       @db.Uuid
+  createdByUserId String?     @db.Uuid
+  name           String
+  keyHash        String
+  prefix         String
+  scopes         String[]     @default([])
+  lastUsedAt     DateTime?
+  revokedAt      DateTime?
+  createdAt      DateTime     @default(now())
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  createdBy      User?        @relation(fields: [createdByUserId], references: [id], onDelete: SetNull)
+
+  @@index([organizationId])
+  @@index([prefix])
+}
+
+model Notification {
+  id             String       @id @default(uuid()) @db.Uuid
+  organizationId String       @db.Uuid
+  userId         String?      @db.Uuid
+  type           String
+  title          String
+  body           String?
+  readAt         DateTime?
+  metadata       Json?
+  createdAt      DateTime     @default(now())
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  user           User?        @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([organizationId])
+  @@index([userId])
 }

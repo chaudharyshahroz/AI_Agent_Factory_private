@@ -20,6 +20,11 @@ const config: Config = {
         card: { DEFAULT: "hsl(var(--card))", foreground: "hsl(var(--card-foreground))" }
       },
       borderRadius: { lg: "8px", md: "6px", sm: "4px" }
+      ,
+      boxShadow: {
+        glow: "0 0 34px rgba(99, 102, 241, 0.28)",
+        soft: "0 18px 60px rgba(15, 23, 42, 0.10)"
+      }
     }
   },
   plugins: [animate]

@@ -1,7 +1,36 @@
+export const dynamic = "force-dynamic";
+
 import Link from "next/link";
+import { Search } from "lucide-react";
 import { Card } from "@/components/ui/card";
-import { categoryCatalog } from "@/lib/categories/catalog";
+import { PageHeader, StatusBadge } from "@/components/dashboard/primitives";
+import { categories, comingSoonCategories } from "@/lib/categent/content";
 
 export default function CreateAgentPage() {
-  return <div><h1 className="text-3xl font-semibold">Create Agent</h1><p className="mt-2 text-muted-foreground">Choose a business category to start from a focused template.</p><div className="mt-8 grid gap-4 md:grid-cols-3">{categoryCatalog.map((category) => <Link key={category.slug} href={`/dashboard/create-agent/${category.slug}`} className="no-underline"><Card className="h-full transition hover:border-primary"><h2 className="font-semibold text-foreground">{category.name}</h2><p className="mt-2 text-sm text-muted-foreground">{category.description}</p></Card></Link>)}</div></div>;
+  return (
+    <div>
+      <PageHeader title="Create an AI agent" text="Choose a business category, then Categent will guide you through templates, workflow description, setup questions, knowledge, tools, blueprint generation, testing, and deployment." />
+      <div className="mb-6 flex items-center gap-3 rounded-lg border bg-white px-4 py-3 text-sm text-slate-500"><Search className="h-4 w-4" /> Search categories and use cases</div>
+      <div className="grid gap-4 lg:grid-cols-3">
+        {categories.map((category) => {
+          const Icon = category.icon;
+          return (
+            <Link key={category.slug} href={`/dashboard/create-agent/${category.slug}`} className="no-underline">
+              <Card className="h-full bg-white transition hover:-translate-y-1 hover:border-indigo-300 hover:shadow-soft">
+                <div className="flex items-center justify-between">
+                  <span className="flex h-12 w-12 items-center justify-center rounded-md bg-indigo-50 text-indigo-600"><Icon className="h-6 w-6" /></span>
+                  <StatusBadge tone="green">Active</StatusBadge>
+                </div>
+                <h2 className="mt-5 text-xl font-bold">{category.name}</h2>
+                <p className="mt-2 text-sm leading-6 text-slate-500">{category.description}</p>
+                <div className="mt-5 flex flex-wrap gap-2">{category.exampleAgents.slice(0, 3).map((agent) => <span key={agent} className="rounded-full bg-slate-100 px-3 py-1 text-xs text-slate-600">{agent}</span>)}</div>
+              </Card>
+            </Link>
+          );
+        })}
+      </div>
+      <h2 className="mt-10 text-2xl font-bold">Coming soon</h2>
+      <div className="mt-4 grid gap-3 md:grid-cols-5">{comingSoonCategories.map((category) => <div key={category} className="rounded-md border bg-white p-4 text-sm text-slate-500">{category}</div>)}</div>
+    </div>
+  );
 }

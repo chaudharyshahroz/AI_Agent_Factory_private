@@ -24,8 +24,19 @@ export async function requireOrganizationAccess(userId: string, organizationId: 
 
 export async function requireOwnerOrAdmin(userId: string, organizationId: string) {
   const member = await requireOrganizationAccess(userId, organizationId);
-  if (!["OWNER", "ADMIN"].includes(member.role)) throw new Error("Owner or admin role required");
+  if (!["SUPER_ADMIN", "OWNER", "ADMIN"].includes(member.role)) throw new Error("Owner or admin role required");
   return member;
+}
+
+export async function isSuperAdmin(userId: string) {
+  const user = await prisma.user.findUnique({ where: { id: userId }, include: { memberships: true } });
+  return Boolean(user?.memberships.some((member) => member.role === "SUPER_ADMIN") || (process.env.INITIAL_SUPER_ADMIN_EMAIL && user?.email.toLowerCase() === process.env.INITIAL_SUPER_ADMIN_EMAIL.toLowerCase()));
+}
+
+export async function requireSuperAdmin() {
+  const user = await requireUser();
+  if (!(await isSuperAdmin(user.id))) redirect("/dashboard");
+  return user;
 }
 
 export async function requireAgentAccess(userId: string, agentId: string) {

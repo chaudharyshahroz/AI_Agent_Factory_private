@@ -7,7 +7,13 @@ import { rateLimit } from "@/lib/rate-limit/redis";
 import { safeError } from "@/lib/security/errors";
 import { redirectToPath } from "@/lib/utils/redirect";
 
-const SignupSchema = z.object({ email: z.string().email(), password: z.string().min(8), name: z.string().optional() });
+const SignupSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(8),
+  name: z.string().optional(),
+  organizationName: z.string().optional(),
+  businessCategory: z.string().optional()
+});
 
 export async function POST(request: Request) {
   try {
@@ -20,13 +26,24 @@ export async function POST(request: Request) {
         email: input.email.toLowerCase(),
         name: input.name,
         passwordHash: await hashPassword(input.password),
-        memberships: { create: { role: "OWNER", organization: { create: { name: input.name ? `${input.name}'s organization` : "My organization", subscriptions: { create: { plan: "FREE", status: "free" } } } } } }
+        memberships: {
+          create: {
+            role: process.env.INITIAL_SUPER_ADMIN_EMAIL?.toLowerCase() === input.email.toLowerCase() ? "SUPER_ADMIN" : "OWNER",
+            organization: {
+              create: {
+                name: input.organizationName || (input.name ? `${input.name}'s organization` : "My organization"),
+                subscriptions: { create: { plan: "FREE", status: "free" } },
+                auditLogs: { create: { action: "organization_created", metadata: { businessCategory: input.businessCategory || "not_set" } } }
+              }
+            }
+          }
+        }
       }
     });
     const org = await prisma.organizationMember.findFirstOrThrow({ where: { userId: user.id } });
     await prisma.auditLog.create({ data: { organizationId: org.organizationId, actorUserId: user.id, action: "signup" } });
     await createSession(user.id);
-    return redirectToPath("/dashboard");
+    return redirectToPath("/onboarding");
   } catch (error) {
     return safeError(error, "Signup failed");
   }

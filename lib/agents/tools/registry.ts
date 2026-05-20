@@ -11,6 +11,15 @@ import { createSupportTicketStubTool } from "@/lib/agents/tools/create-support-t
 import { ecommerceOrderLookupStubTool } from "@/lib/agents/tools/ecommerce-order-lookup-stub";
 import { productSearchStubTool } from "@/lib/agents/tools/product-search-stub";
 import { crmCreateContactStubTool } from "@/lib/agents/tools/crm-create-contact-stub";
+import {
+  appointmentRequestTool,
+  collectCustomerInfoTool,
+  createSupportTicketTool,
+  orderLookupStubTool,
+  productSearchFromKnowledgeTool,
+  sendInternalNotificationTool,
+  webhookStubTool
+} from "@/lib/agents/tools/business-tools";
 
 export const toolRegistry = new Map(
   [
@@ -22,7 +31,14 @@ export const toolRegistry = new Map(
     createSupportTicketStubTool,
     ecommerceOrderLookupStubTool,
     productSearchStubTool,
-    crmCreateContactStubTool
+    crmCreateContactStubTool,
+    appointmentRequestTool,
+    createSupportTicketTool,
+    productSearchFromKnowledgeTool,
+    collectCustomerInfoTool,
+    sendInternalNotificationTool,
+    webhookStubTool,
+    orderLookupStubTool
   ].map((tool) => [tool.name, tool])
 );
 
