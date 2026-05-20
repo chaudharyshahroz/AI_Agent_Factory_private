@@ -26,7 +26,7 @@ docker compose -f docker-compose.prod.yml exec app npx prisma migrate deploy
 docker compose -f docker-compose.prod.yml exec app npm run db:seed
 ```
 
-For Dokploy, use `docker-compose.dokploy.yml` and route the domain to service `app` on internal port `3010`. Dokploy supplies the public reverse proxy, so the Dokploy compose file does not bind host ports.
+For Dokploy, create a Docker Compose deployment, not a single Dockerfile application. Use `docker-compose.dokploy.yml` and route the domain to service `app` on internal port `3010`. Dokploy supplies the public reverse proxy, so the Dokploy compose file does not bind host ports.
 
 ## Commands
 

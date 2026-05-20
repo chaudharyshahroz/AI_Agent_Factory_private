@@ -2,6 +2,23 @@
 
 Use `docker-compose.dokploy.yml` for Dokploy deployments. Do not use `docker-compose.prod.yml` inside Dokploy unless you intentionally want the app stack to manage Caddy and bind ports 80/443.
 
+## Important Dokploy Setting
+
+Create this project as a **Docker Compose** deployment, not as a single **Dockerfile** application.
+
+The app needs four services:
+
+- `app`
+- `worker`
+- `postgres`
+- `redis`
+
+If Dokploy is showing Dockerfile fields such as "Dockerfile", "Docker Context Path", or "Docker Build Stage", you are in the wrong deployment type for the production stack. Switch/create the service as Docker Compose and set:
+
+- Compose file: `docker-compose.dokploy.yml`
+- Build path: `.`
+- Branch: `main`
+
 Dokploy should route the public domain to:
 
 - Service: `app`
