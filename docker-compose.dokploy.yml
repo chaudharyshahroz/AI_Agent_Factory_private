@@ -6,11 +6,13 @@ services:
     restart: unless-stopped
     env_file:
       - .env
+    environment:
+      PORT: 3010
     depends_on:
       - postgres
       - redis
     expose:
-      - "3000"
+      - "3010"
     volumes:
       - app_storage:/app/storage
 

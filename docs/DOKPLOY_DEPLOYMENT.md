@@ -5,9 +5,9 @@ Use `docker-compose.dokploy.yml` for Dokploy deployments. Do not use `docker-com
 Dokploy should route the public domain to:
 
 - Service: `app`
-- Internal port: `3000`
+- Internal port: `3010`
 
-The compose file uses `expose: "3000"` instead of host `ports`, so it will not collide with existing apps already using ports 3000 through 3005 on the VPS.
+The compose file sets `PORT=3010` and uses `expose: "3010"` instead of host `ports`, so it will not collide with existing apps already using ports 3000 through 3005 on the VPS.
 
 ## Required Environment Overrides
 
@@ -16,6 +16,7 @@ Inside Dokploy, create `.env` variables using service hostnames:
 ```env
 APP_DOMAIN=your-domain.com
 APP_URL=https://your-domain.com
+PORT=3010
 DATABASE_URL=postgresql://agentfactory:CHANGE_ME@postgres:5432/agentfactory?schema=public
 REDIS_URL=redis://redis:6379
 LOCAL_STORAGE_PATH=/app/storage
