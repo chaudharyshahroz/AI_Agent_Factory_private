@@ -1,0 +1,490 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  OWNER
+  ADMIN
+  MEMBER
+  VIEWER
+}
+
+enum AgentStatus {
+  DRAFT
+  TESTING
+  DEPLOYED
+  PAUSED
+  ARCHIVED
+}
+
+enum ConversationSource {
+  DASHBOARD_TEST
+  WEBSITE_WIDGET
+  API
+  WHATSAPP_PLACEHOLDER
+  EMAIL_PLACEHOLDER
+}
+
+enum MessageRole {
+  USER
+  ASSISTANT
+  SYSTEM
+  TOOL
+}
+
+enum HumanApprovalStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  EXPIRED
+}
+
+enum SubscriptionPlan {
+  FREE
+  STARTER
+  PRO
+  BUSINESS
+}
+
+enum DocumentStatus {
+  PROCESSING
+  READY
+  FAILED
+}
+
+enum DeploymentStatus {
+  ACTIVE
+  PAUSED
+  DISABLED
+}
+
+model User {
+  id           String   @id @default(uuid()) @db.Uuid
+  email        String   @unique
+  name         String?
+  passwordHash String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  sessions       Session[]
+  memberships    OrganizationMember[]
+  approvedItems  HumanApproval[] @relation("ApprovedBy")
+  rejectedItems  HumanApproval[] @relation("RejectedBy")
+}
+
+model Organization {
+  id        String   @id @default(uuid()) @db.Uuid
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  members                OrganizationMember[]
+  subscriptions          Subscription[]
+  agents                 Agent[]
+  blueprints             AgentBlueprint[]
+  versions               AgentVersion[]
+  deployments            AgentDeployment[]
+  knowledgeSources       KnowledgeSource[]
+  documents              Document[]
+  documentChunks         DocumentChunk[]
+  conversations          Conversation[]
+  messages               Message[]
+  toolCalls              ToolCall[]
+  toolResults            ToolResult[]
+  humanApprovals         HumanApproval[]
+  integrations           Integration[]
+  integrationCredentials IntegrationCredential[]
+  integrationEvents      IntegrationEvent[]
+  testCases              AgentTestCase[]
+  testRuns               AgentTestRun[]
+  usageEvents            UsageEvent[]
+  auditLogs              AuditLog[]
+  leads                  Lead[]
+  bookings               Booking[]
+}
+
+model OrganizationMember {
+  id             String       @id @default(uuid()) @db.Uuid
+  organizationId String      @db.Uuid
+  userId         String      @db.Uuid
+  role           Role        @default(MEMBER)
+  createdAt      DateTime    @default(now())
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([organizationId, userId])
+  @@index([userId])
+}
+
+model Session {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @db.Uuid
+  tokenHash String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model PasswordResetToken {
+  id        String   @id @default(uuid()) @db.Uuid
+  email     String
+  tokenHash String   @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime @default(now())
+}
+
+model Subscription {
+  id                   String           @id @default(uuid()) @db.Uuid
+  organizationId       String           @db.Uuid
+  plan                 SubscriptionPlan @default(FREE)
+  stripeCustomerId     String?
+  stripeSubscriptionId String?
+  status               String           @default("free")
+  currentPeriodEnd     DateTime?
+  createdAt            DateTime         @default(now())
+  updatedAt            DateTime         @updatedAt
+  organization         Organization     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId])
+}
+
+model CategoryPack {
+  id          String   @id @default(uuid()) @db.Uuid
+  slug        String   @unique
+  name        String
+  description String
+  createdAt   DateTime @default(now())
+  templates   AgentTemplate[]
+  questions   SetupQuestion[]
+}
+
+model AgentTemplate {
+  id             String       @id @default(uuid()) @db.Uuid
+  categoryPackId String       @db.Uuid
+  slug           String
+  name           String
+  description    String
+  createdAt      DateTime     @default(now())
+  categoryPack   CategoryPack @relation(fields: [categoryPackId], references: [id], onDelete: Cascade)
+  agents         Agent[]
+
+  @@unique([categoryPackId, slug])
+}
+
+model SetupQuestion {
+  id             String       @id @default(uuid()) @db.Uuid
+  categoryPackId String       @db.Uuid
+  prompt         String
+  inputType      String       @default("text")
+  options        Json?
+  sortOrder      Int          @default(0)
+  categoryPack   CategoryPack @relation(fields: [categoryPackId], references: [id], onDelete: Cascade)
+}
+
+model ToolDefinition {
+  id               String   @id @default(uuid()) @db.Uuid
+  name             String   @unique
+  description      String
+  category         String
+  riskLevel        String   @default("low")
+  requiresApproval Boolean  @default(false)
+  enabledByDefault Boolean  @default(true)
+  inputSchema      Json
+  createdAt        DateTime @default(now())
+}
+
+model Agent {
+  id             String        @id @default(uuid()) @db.Uuid
+  organizationId String        @db.Uuid
+  categorySlug   String
+  templateId     String?       @db.Uuid
+  name           String
+  description    String?
+  status         AgentStatus   @default(DRAFT)
+  setupAnswers   Json?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  organization   Organization  @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  template       AgentTemplate? @relation(fields: [templateId], references: [id])
+  blueprints     AgentBlueprint[]
+  versions       AgentVersion[]
+  deployments    AgentDeployment[]
+  documents      Document[]
+  chunks         DocumentChunk[]
+  conversations  Conversation[]
+  testCases      AgentTestCase[]
+  testRuns       AgentTestRun[]
+  leads          Lead[]
+  bookings       Booking[]
+
+  @@index([organizationId])
+}
+
+model AgentBlueprint {
+  id             String       @id @default(uuid()) @db.Uuid
+  organizationId String       @db.Uuid
+  agentId        String       @db.Uuid
+  version        Int          @default(1)
+  content        Json
+  promptMetadata Json?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  agent          Agent        @relation(fields: [agentId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId, agentId])
+}
+
+model AgentVersion {
+  id             String       @id @default(uuid()) @db.Uuid
+  organizationId String       @db.Uuid
+  agentId        String       @db.Uuid
+  version        Int
+  snapshot       Json
+  createdAt      DateTime     @default(now())
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  agent          Agent        @relation(fields: [agentId], references: [id], onDelete: Cascade)
+}
+
+model AgentDeployment {
+  id             String           @id @default(uuid()) @db.Uuid
+  organizationId String           @db.Uuid
+  agentId        String           @db.Uuid
+  publicKey      String           @unique
+  allowedDomains String[]         @default([])
+  status         DeploymentStatus @default(ACTIVE)
+  widgetSettings Json?
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  organization   Organization     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  agent          Agent            @relation(fields: [agentId], references: [id], onDelete: Cascade)
+}
+
+model KnowledgeSource {
+  id             String       @id @default(uuid()) @db.Uuid
+  organizationId String       @db.Uuid
+  agentId        String?      @db.Uuid
+  name           String
+  sourceType     String
+  metadata       Json?
+  createdAt      DateTime     @default(now())
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+}
+
+model Document {
+  id             String         @id @default(uuid()) @db.Uuid
+  organizationId String         @db.Uuid
+  agentId        String         @db.Uuid
+  fileName       String
+  mimeType       String
+  storagePath    String
+  sizeBytes      Int
+  status         DocumentStatus @default(PROCESSING)
+  error          String?
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  organization   Organization   @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  agent          Agent          @relation(fields: [agentId], references: [id], onDelete: Cascade)
+  chunks         DocumentChunk[]
+}
+
+model DocumentChunk {
+  id             String       @id @default(uuid()) @db.Uuid
+  organizationId String       @db.Uuid
+  agentId        String       @db.Uuid
+  documentId     String       @db.Uuid
+  content        String
+  metadata       Json?
+  tokenCount     Int
+  createdAt      DateTime     @default(now())
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  agent          Agent        @relation(fields: [agentId], references: [id], onDelete: Cascade)
+  document       Document     @relation(fields: [documentId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId, agentId])
+  @@map("DocumentChunk")
+}
+
+model Conversation {
+  id             String             @id @default(uuid()) @db.Uuid
+  organizationId String             @db.Uuid
+  agentId        String             @db.Uuid
+  source         ConversationSource @default(DASHBOARD_TEST)
+  visitorId      String?
+  title          String?
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @updatedAt
+  organization   Organization       @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  agent          Agent              @relation(fields: [agentId], references: [id], onDelete: Cascade)
+  messages       Message[]
+  toolCalls      ToolCall[]
+  approvals      HumanApproval[]
+}
+
+model Message {
+  id             String       @id @default(uuid()) @db.Uuid
+  organizationId String       @db.Uuid
+  conversationId String       @db.Uuid
+  role           MessageRole
+  content        String
+  metadata       Json?
+  createdAt      DateTime     @default(now())
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+}
+
+model ToolCall {
+  id             String       @id @default(uuid()) @db.Uuid
+  organizationId String       @db.Uuid
+  conversationId String?      @db.Uuid
+  toolName       String
+  arguments      Json
+  status         String
+  createdAt      DateTime     @default(now())
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  conversation   Conversation? @relation(fields: [conversationId], references: [id], onDelete: SetNull)
+  result         ToolResult?
+}
+
+model ToolResult {
+  id             String       @id @default(uuid()) @db.Uuid
+  organizationId String       @db.Uuid
+  toolCallId     String       @unique @db.Uuid
+  result         Json
+  createdAt      DateTime     @default(now())
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  toolCall       ToolCall     @relation(fields: [toolCallId], references: [id], onDelete: Cascade)
+}
+
+model HumanApproval {
+  id                   String              @id @default(uuid()) @db.Uuid
+  organizationId       String              @db.Uuid
+  agentId              String              @db.Uuid
+  conversationId       String?             @db.Uuid
+  toolName             String
+  requestedAction      String
+  proposedArguments    Json
+  riskLevel            String
+  status               HumanApprovalStatus @default(PENDING)
+  requestedByMessageId String?             @db.Uuid
+  approvedByUserId     String?             @db.Uuid
+  rejectedByUserId     String?             @db.Uuid
+  createdAt            DateTime            @default(now())
+  decidedAt            DateTime?
+  organization         Organization        @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  conversation         Conversation?       @relation(fields: [conversationId], references: [id], onDelete: SetNull)
+  approvedBy           User?               @relation("ApprovedBy", fields: [approvedByUserId], references: [id])
+  rejectedBy           User?               @relation("RejectedBy", fields: [rejectedByUserId], references: [id])
+}
+
+model Integration {
+  id             String       @id @default(uuid()) @db.Uuid
+  organizationId String       @db.Uuid
+  provider       String
+  status         String       @default("coming_soon")
+  config         Json?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+}
+
+model IntegrationCredential {
+  id             String       @id @default(uuid()) @db.Uuid
+  organizationId String       @db.Uuid
+  provider       String
+  encryptedData  String
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+}
+
+model IntegrationEvent {
+  id             String       @id @default(uuid()) @db.Uuid
+  organizationId String       @db.Uuid
+  provider       String
+  eventType      String
+  payload        Json
+  createdAt      DateTime     @default(now())
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+}
+
+model AgentTestCase {
+  id             String       @id @default(uuid()) @db.Uuid
+  organizationId String       @db.Uuid
+  agentId        String       @db.Uuid
+  name           String
+  input          String
+  expected       String
+  metadata       Json?
+  createdAt      DateTime     @default(now())
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  agent          Agent        @relation(fields: [agentId], references: [id], onDelete: Cascade)
+}
+
+model AgentTestRun {
+  id             String       @id @default(uuid()) @db.Uuid
+  organizationId String       @db.Uuid
+  agentId        String       @db.Uuid
+  testCaseId     String?      @db.Uuid
+  input          String
+  output         Json
+  passed         Boolean?
+  createdAt      DateTime     @default(now())
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  agent          Agent        @relation(fields: [agentId], references: [id], onDelete: Cascade)
+}
+
+model UsageEvent {
+  id             String       @id @default(uuid()) @db.Uuid
+  organizationId String       @db.Uuid
+  type           String
+  quantity       Int          @default(1)
+  metadata       Json?
+  createdAt      DateTime     @default(now())
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+}
+
+model AuditLog {
+  id             String       @id @default(uuid()) @db.Uuid
+  organizationId String       @db.Uuid
+  actorUserId    String?      @db.Uuid
+  action         String
+  targetType     String?
+  targetId       String?
+  metadata       Json?
+  createdAt      DateTime     @default(now())
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+}
+
+model Lead {
+  id             String       @id @default(uuid()) @db.Uuid
+  organizationId String       @db.Uuid
+  agentId        String?      @db.Uuid
+  name           String?
+  email          String?
+  phone          String?
+  status         String       @default("new")
+  metadata       Json?
+  createdAt      DateTime     @default(now())
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  agent          Agent?       @relation(fields: [agentId], references: [id], onDelete: SetNull)
+}
+
+model Booking {
+  id             String       @id @default(uuid()) @db.Uuid
+  organizationId String       @db.Uuid
+  agentId        String?      @db.Uuid
+  leadId         String?      @db.Uuid
+  status         String       @default("PENDING_APPROVAL")
+  scheduledFor   DateTime?
+  metadata       Json?
+  createdAt      DateTime     @default(now())
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  agent          Agent?       @relation(fields: [agentId], references: [id], onDelete: SetNull)
+}
