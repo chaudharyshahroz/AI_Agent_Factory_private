@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import type Stripe from "stripe";
 import { prisma } from "@/lib/db/prisma";
 import { stripe } from "@/lib/billing/stripe";
 
@@ -21,7 +22,7 @@ export async function POST(request: Request) {
     }
   }
   if (event.type.startsWith("customer.subscription.")) {
-    const subscription = event.data.object;
+    const subscription = event.data.object as Stripe.Subscription;
     await prisma.subscription.updateMany({ where: { stripeSubscriptionId: subscription.id }, data: { status: subscription.status } });
   }
   return NextResponse.json({ received: true });

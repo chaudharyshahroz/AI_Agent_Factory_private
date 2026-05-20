@@ -3,6 +3,7 @@ import path from "path";
 import mammoth from "mammoth";
 import { parse } from "csv-parse/sync";
 import { prisma } from "@/lib/db/prisma";
+import { toJson } from "@/lib/db/json";
 import { chunkText } from "@/lib/agents/chunking";
 import { embeddingQueue } from "@/lib/queue/queues";
 
@@ -26,7 +27,7 @@ export async function processDocument(documentId: string) {
     const text = await extractText(doc.storagePath, doc.mimeType);
     const chunks = chunkText(text, { fileName: doc.fileName, sourceType: path.extname(doc.fileName).slice(1) });
     await prisma.documentChunk.createMany({
-      data: chunks.map((chunk) => ({ organizationId: doc.organizationId, agentId: doc.agentId, documentId: doc.id, content: chunk.content, tokenCount: chunk.tokenCount, metadata: chunk.metadata }))
+      data: chunks.map((chunk) => ({ organizationId: doc.organizationId, agentId: doc.agentId, documentId: doc.id, content: chunk.content, tokenCount: chunk.tokenCount, metadata: toJson(chunk.metadata) }))
     });
     await embeddingQueue.add("embed-document", { documentId: doc.id });
     await prisma.document.update({ where: { id: doc.id }, data: { status: "READY" } });

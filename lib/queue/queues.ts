@@ -1,7 +1,28 @@
 import { Queue } from "bullmq";
-import { redis } from "@/lib/rate-limit/redis";
+import { getRedis } from "@/lib/rate-limit/redis";
 
-export const fileProcessingQueue = new Queue("file-processing", { connection: redis });
-export const embeddingQueue = new Queue("embedding-generation", { connection: redis });
-export const agentTestQueue = new Queue("agent-test-run", { connection: redis });
-export const usageRollupQueue = new Queue("usage-rollup", { connection: redis });
+const queues = new Map<string, Queue>();
+
+function getQueue(name: string) {
+  const existing = queues.get(name);
+  if (existing) return existing;
+  const queue = new Queue(name, { connection: getRedis() });
+  queues.set(name, queue);
+  return queue;
+}
+
+export const fileProcessingQueue = {
+  add: (...args: Parameters<Queue["add"]>) => getQueue("file-processing").add(...args)
+};
+
+export const embeddingQueue = {
+  add: (...args: Parameters<Queue["add"]>) => getQueue("embedding-generation").add(...args)
+};
+
+export const agentTestQueue = {
+  add: (...args: Parameters<Queue["add"]>) => getQueue("agent-test-run").add(...args)
+};
+
+export const usageRollupQueue = {
+  add: (...args: Parameters<Queue["add"]>) => getQueue("usage-rollup").add(...args)
+};

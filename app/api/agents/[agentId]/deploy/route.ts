@@ -3,9 +3,10 @@ import { randomBytes } from "crypto";
 import { requireAgentAccess, requireUser } from "@/lib/auth/access";
 import { prisma } from "@/lib/db/prisma";
 
-export async function POST(request: Request, { params }: { params: { agentId: string } }) {
+export async function POST(request: Request, { params }: { params: Promise<{ agentId: string }> }) {
+  const { agentId } = await params;
   const user = await requireUser();
-  const agent = await requireAgentAccess(user.id, params.agentId);
+  const agent = await requireAgentAccess(user.id, agentId);
   const existing = await prisma.agentDeployment.findFirst({ where: { agentId: agent.id } });
   const deployment = existing
     ? await prisma.agentDeployment.update({ where: { id: existing.id }, data: { status: "ACTIVE" } })

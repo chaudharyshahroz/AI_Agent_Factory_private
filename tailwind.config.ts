@@ -1,4 +1,5 @@
 import type { Config } from "tailwindcss";
+import animate from "tailwindcss-animate";
 
 const config: Config = {
   darkMode: ["class"],
@@ -21,7 +22,7 @@ const config: Config = {
       borderRadius: { lg: "8px", md: "6px", sm: "4px" }
     }
   },
-  plugins: [require("tailwindcss-animate")]
+  plugins: [animate]
 };
 
 export default config;

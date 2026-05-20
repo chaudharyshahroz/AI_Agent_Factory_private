@@ -5,7 +5,8 @@ import { readSession } from "@/lib/auth/session";
 export async function getCurrentUser() {
   const session = await readSession();
   if (!session) return null;
-  const { passwordHash: _passwordHash, ...user } = session.user;
+  const user = { ...session.user };
+  delete (user as { passwordHash?: string }).passwordHash;
   return user;
 }
 

@@ -5,7 +5,7 @@ import { createStructuredOutput } from "@/lib/openai/structured-output";
 export type GenerateBlueprintInput = {
   category: string;
   templateSlug: string;
-  setupAnswers: unknown;
+  setupAnswers?: unknown;
   uploadedKnowledgeSummary?: string;
   enabledIntegrations?: string[];
   desiredTone?: string;

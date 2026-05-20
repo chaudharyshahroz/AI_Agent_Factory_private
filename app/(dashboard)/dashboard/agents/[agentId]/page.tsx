@@ -3,9 +3,10 @@ import { Card } from "@/components/ui/card";
 import { requireUser, requireAgentAccess } from "@/lib/auth/access";
 import { prisma } from "@/lib/db/prisma";
 
-export default async function AgentPage({ params }: { params: { agentId: string } }) {
+export default async function AgentPage({ params }: { params: Promise<{ agentId: string }> }) {
+  const { agentId } = await params;
   const user = await requireUser();
-  const agent = await requireAgentAccess(user.id, params.agentId);
+  const agent = await requireAgentAccess(user.id, agentId);
   const [conversations, approvals] = await Promise.all([
     prisma.conversation.count({ where: { agentId: agent.id } }),
     prisma.humanApproval.count({ where: { agentId: agent.id, status: "PENDING" } })

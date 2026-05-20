@@ -1,9 +1,8 @@
-import { describe, expect, it } from "vitest";
-import { isRiskyAction } from "@/lib/agents/tools/registry";
+import test from "node:test";
+import assert from "node:assert/strict";
+import { isRiskyAction } from "@/lib/agents/risk";
 
-describe("tool approval logic", () => {
-  it("flags risky actions", () => {
-    expect(isRiskyAction("refund customer")).toBe(true);
-    expect(isRiskyAction("answer FAQ")).toBe(false);
-  });
+test("tool approval logic flags risky actions", () => {
+  assert.equal(isRiskyAction("refund customer"), true);
+  assert.equal(isRiskyAction("answer FAQ"), false);
 });

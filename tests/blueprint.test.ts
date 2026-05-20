@@ -1,19 +1,18 @@
-import { describe, expect, it } from "vitest";
+import test from "node:test";
+import assert from "node:assert/strict";
 import { validateBlueprint } from "@/lib/agents/blueprint-schema";
 import { createDefaultBlueprintFromTemplate, getRiskyActionsFromBlueprint } from "@/lib/agents/blueprint-utils";
 
-describe("blueprints", () => {
-  it("validates a default blueprint", () => {
-    const blueprint = createDefaultBlueprintFromTemplate("e-commerce", "customer-support-agent");
-    expect(validateBlueprint(blueprint).agentName).toBeTruthy();
-  });
+test("validates a default blueprint", () => {
+  const blueprint = createDefaultBlueprintFromTemplate("e-commerce", "customer-support-agent");
+  assert.ok(validateBlueprint(blueprint).agentName);
+});
 
-  it("rejects invalid blueprints", () => {
-    expect(() => validateBlueprint({ agentName: "" })).toThrow();
-  });
+test("rejects invalid blueprints", () => {
+  assert.throws(() => validateBlueprint({ agentName: "" }));
+});
 
-  it("extracts risky actions", () => {
-    const blueprint = createDefaultBlueprintFromTemplate("service-business", "appointment-booking-agent");
-    expect(getRiskyActionsFromBlueprint(blueprint)).toContain("book appointment");
-  });
+test("extracts risky actions", () => {
+  const blueprint = createDefaultBlueprintFromTemplate("service-business", "appointment-booking-agent");
+  assert.ok(getRiskyActionsFromBlueprint(blueprint).includes("book appointment"));
 });

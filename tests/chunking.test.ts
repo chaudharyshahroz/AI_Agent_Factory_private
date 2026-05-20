@@ -1,14 +1,13 @@
-import { describe, expect, it } from "vitest";
+import test from "node:test";
+import assert from "node:assert/strict";
 import { chunkText } from "@/lib/agents/chunking";
 
-describe("chunkText", () => {
-  it("splits text with metadata", () => {
-    const chunks = chunkText("Heading\n\n" + "A".repeat(2200), { fileName: "faq.md" }, 1000, 100);
-    expect(chunks.length).toBeGreaterThan(0);
-    expect(chunks[0].metadata.fileName).toBe("faq.md");
-  });
+test("chunkText splits text with metadata", () => {
+  const chunks = chunkText("Heading\n\n" + "A".repeat(2200), { fileName: "faq.md" }, 1000, 100);
+  assert.ok(chunks.length > 0);
+  assert.equal(chunks[0].metadata.fileName, "faq.md");
+});
 
-  it("returns no chunks for blank input", () => {
-    expect(chunkText("   ")).toEqual([]);
-  });
+test("chunkText returns no chunks for blank input", () => {
+  assert.deepEqual(chunkText("   "), []);
 });

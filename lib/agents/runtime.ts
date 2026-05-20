@@ -1,9 +1,11 @@
 import { z } from "zod";
 import { prisma } from "@/lib/db/prisma";
+import { toJson } from "@/lib/db/json";
 import { searchKnowledge } from "@/lib/agents/knowledge";
 import { buildSystemPrompt, loadAgentContext } from "@/lib/agents/context";
 import { runAgentModel } from "@/lib/agents/run-agent";
-import { executeRegisteredTool, isRiskyAction } from "@/lib/agents/tools/registry";
+import { isRiskyAction } from "@/lib/agents/risk";
+import { executeRegisteredTool } from "@/lib/agents/tools/registry";
 import { moderateText } from "@/lib/openai/moderation";
 
 export const ChatInputSchema = z.object({
@@ -39,7 +41,7 @@ export async function runAgentChat(agentId: string, input: z.infer<typeof ChatIn
         conversationId: conversation.id,
         toolName: "human_handoff",
         requestedAction: risky,
-        proposedArguments: { message: input.message },
+        proposedArguments: toJson({ message: input.message }),
         riskLevel: "high",
         requestedByMessageId: userMessage.id
       }
@@ -56,7 +58,7 @@ export async function runAgentChat(agentId: string, input: z.infer<typeof ChatIn
   }
 
   const message = await runAgentModel(systemPrompt, input.message);
-  await prisma.message.create({ data: { organizationId: agent.organizationId, conversationId: conversation.id, role: "ASSISTANT", content: message, metadata: { citations: chunks, toolSummary } } });
-  await prisma.usageEvent.create({ data: { organizationId: agent.organizationId, type: "message_sent", metadata: { agentId, source: input.source } } });
+  await prisma.message.create({ data: { organizationId: agent.organizationId, conversationId: conversation.id, role: "ASSISTANT", content: message, metadata: toJson({ citations: chunks, toolSummary }) } });
+  await prisma.usageEvent.create({ data: { organizationId: agent.organizationId, type: "message_sent", metadata: toJson({ agentId, source: input.source }) } });
   return { message, conversationId: conversation.id, status: "completed", citations: chunks, approvalRequired: false, toolCalls: toolSummary };
 }
