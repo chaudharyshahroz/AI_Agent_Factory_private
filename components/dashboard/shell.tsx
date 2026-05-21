@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Bell, ChevronRight, Search } from "lucide-react";
 import { dashboardNav } from "@/lib/categent/content";
 import { getDefaultOrganization, isSuperAdmin, requireUser } from "@/lib/auth/access";
+import { getAdminUrl } from "@/lib/utils/url";
 
 export async function DashboardShell({ children }: { children: React.ReactNode }) {
   const user = await requireUser();
@@ -29,7 +30,7 @@ export async function DashboardShell({ children }: { children: React.ReactNode }
               </Link>
             );
           })}
-          {superAdmin ? <Link href="/admin" className="mt-3 rounded-md border border-cyan-300/20 bg-cyan-300/10 px-3 py-2.5 text-sm font-semibold text-cyan-100 no-underline">Super admin</Link> : null}
+          {superAdmin ? <Link href={getAdminUrl("/admin").toString()} className="mt-3 rounded-md border border-cyan-300/20 bg-cyan-300/10 px-3 py-2.5 text-sm font-semibold text-cyan-100 no-underline">Super admin</Link> : null}
         </nav>
         <form action="/api/auth/logout" method="post" className="absolute bottom-5 left-5 right-5">
           <button className="w-full rounded-md border border-white/10 px-3 py-2 text-sm text-slate-300 hover:bg-white/[0.06]">Log out</button>
