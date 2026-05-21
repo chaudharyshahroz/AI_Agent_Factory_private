@@ -41,7 +41,7 @@ export async function runAgentChat(agentId: string, input: z.infer<typeof ChatIn
         conversationId: conversation.id,
         toolName: "human_handoff",
         requestedAction: risky,
-        proposedArguments: toJson({ message: input.message }),
+        proposedArguments: toJson({ reason: risky, summary: input.message }),
         riskLevel: "high",
         requestedByMessageId: userMessage.id
       }

@@ -18,6 +18,25 @@ export const BlueprintTestCaseSchema = z.object({
   shouldRequireApproval: z.boolean().default(false)
 });
 
+export const BlueprintWorkflowNodeSchema = z.object({
+  id: z.string().min(1),
+  label: z.string().min(1),
+  type: z.string().default("step"),
+  description: z.string().optional()
+});
+
+export const BlueprintWorkflowEdgeSchema = z.object({
+  from: z.string().min(1),
+  to: z.string().min(1),
+  label: z.string().optional()
+});
+
+export const BlueprintReadinessItemSchema = z.object({
+  label: z.string().min(1),
+  complete: z.boolean().default(false),
+  detail: z.string().optional()
+});
+
 export const AgentBlueprintSchema = z.object({
   category: z.string().min(1),
   templateSlug: z.string().min(1),
@@ -37,7 +56,11 @@ export const AgentBlueprintSchema = z.object({
   escalationRules: z.array(z.string()).default([]),
   complianceRules: z.array(z.string()).default([]),
   testCases: z.array(BlueprintTestCaseSchema).default([]),
-  deploymentRecommendations: z.array(z.string()).default([])
+  deploymentRecommendations: z.array(z.string()).default([]),
+  visualWorkflowNodes: z.array(BlueprintWorkflowNodeSchema).default([]),
+  visualWorkflowEdges: z.array(BlueprintWorkflowEdgeSchema).default([]),
+  estimatedSetupScore: z.number().min(0).max(100).default(70),
+  readinessChecklist: z.array(BlueprintReadinessItemSchema).default([])
 });
 
 export function validateBlueprint(input: unknown) {

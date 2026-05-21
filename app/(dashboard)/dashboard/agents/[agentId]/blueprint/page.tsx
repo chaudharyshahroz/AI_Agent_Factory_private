@@ -3,7 +3,7 @@ export const dynamic = "force-dynamic";
 import { CheckCircle2, GitBranch, ShieldCheck, Wrench } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
-import { Button } from "@/components/ui/button";
+import { GenerationSubmitButton } from "@/components/agents/generation-submit";
 import { PageHeader, StatusBadge } from "@/components/dashboard/primitives";
 import { requireAgentAccess, requireUser } from "@/lib/auth/access";
 import { prisma } from "@/lib/db/prisma";
@@ -26,7 +26,7 @@ export default async function BlueprintPage({ params }: { params: Promise<{ agen
             <input type="hidden" name="category" value={agent.categorySlug} />
             <input type="hidden" name="templateSlug" value={typeof setupAnswers.templateSlug === "string" ? setupAnswers.templateSlug : "customer-support-agent"} />
             <Textarea name="content" className="min-h-[620px] font-mono text-xs" defaultValue={blueprint ? JSON.stringify(blueprint.content, null, 2) : ""} />
-            <Button type="submit">{blueprint ? "Save blueprint" : "Generate blueprint"}</Button>
+            <GenerationSubmitButton idleLabel={blueprint ? "Validate and save blueprint" : "Generate blueprint"} pendingLabel={blueprint ? "Validating blueprint..." : "Generating blueprint..."} />
           </form>
         </Card>
         <aside className="grid gap-4">

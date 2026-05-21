@@ -2,9 +2,9 @@ export const dynamic = "force-dynamic";
 
 import { notFound } from "next/navigation";
 import { BrainCircuit, CheckCircle2, Database, GitBranch, PlugZap, Rocket, ShieldCheck } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
+import { GenerationSubmitButton } from "@/components/agents/generation-submit";
 import { getCategory } from "@/lib/categories/catalog";
 import { buildProgress, tools, workflowSteps } from "@/lib/categent/content";
 
@@ -46,7 +46,7 @@ export default async function SetupWizardPage({ params }: { params: Promise<{ ca
                 {tools.slice(0, 8).map((tool) => <label key={tool.name} className="flex items-start gap-3 rounded-md border p-3 text-sm"><input type="checkbox" name="enabledTools" value={tool.name} defaultChecked={tool.risk !== "CRITICAL"} className="mt-1" /><span><span className="font-semibold">{tool.label}</span><span className="block text-slate-500">{tool.risk} risk · {tool.approval ? "approval required" : "automatic"}</span></span></label>)}
               </div>
             </section>
-            <Button type="submit" className="bg-gradient-to-r from-indigo-500 to-cyan-400">Generate AI Agent Blueprint</Button>
+            <GenerationSubmitButton idleLabel="Generate AI Agent Blueprint" />
           </form>
         </Card>
         <aside className="grid gap-4">

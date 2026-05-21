@@ -5,8 +5,41 @@ const baseTools = [
   { name: "human_handoff", description: "Create a human follow-up request.", inputSchema: { reason: "string" }, requiresApproval: false, category: "support", enabledByDefault: true }
 ];
 
+const baseWorkflow = {
+  visualWorkflowNodes: [
+    { id: "start", label: "Start", type: "event" },
+    { id: "message", label: "User message", type: "input" },
+    { id: "moderation", label: "Moderation", type: "guardrail" },
+    { id: "knowledge", label: "Knowledge search", type: "retrieval" },
+    { id: "tool", label: "Tool decision", type: "action" },
+    { id: "approval", label: "Human approval", type: "guardrail" },
+    { id: "response", label: "Response", type: "output" },
+    { id: "log", label: "Audit log", type: "log" }
+  ],
+  visualWorkflowEdges: [
+    { from: "start", to: "message" },
+    { from: "message", to: "moderation" },
+    { from: "moderation", to: "knowledge" },
+    { from: "knowledge", to: "tool" },
+    { from: "tool", to: "approval", label: "if risky" },
+    { from: "tool", to: "response", label: "if safe" },
+    { from: "approval", to: "response" },
+    { from: "response", to: "log" }
+  ],
+  estimatedSetupScore: 72,
+  readinessChecklist: [
+    { label: "Blueprint generated", complete: true },
+    { label: "Knowledge uploaded", complete: false },
+    { label: "Tools selected", complete: true },
+    { label: "Test passed", complete: false },
+    { label: "Deployment configured", complete: false },
+    { label: "Billing plan allows deploy", complete: false }
+  ]
+};
+
 export const exampleBlueprints: AgentBlueprintContent[] = [
   {
+    ...baseWorkflow,
     category: "e-commerce",
     templateSlug: "customer-support-agent",
     agentName: "Store Support Agent",
@@ -28,6 +61,7 @@ export const exampleBlueprints: AgentBlueprintContent[] = [
     deploymentRecommendations: ["Add widget to product and help pages.", "Upload current policies before deployment."]
   },
   {
+    ...baseWorkflow,
     category: "real-estate",
     templateSlug: "buyer-lead-qualification-agent",
     agentName: "Buyer Qualification Agent",
@@ -49,6 +83,7 @@ export const exampleBlueprints: AgentBlueprintContent[] = [
     deploymentRecommendations: ["Place widget on listings and contact pages."]
   },
   {
+    ...baseWorkflow,
     category: "service-business",
     templateSlug: "appointment-booking-agent",
     agentName: "Appointment Intake Agent",

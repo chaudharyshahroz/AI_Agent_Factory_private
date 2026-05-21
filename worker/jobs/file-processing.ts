@@ -29,8 +29,11 @@ export async function processDocument(documentId: string) {
     await prisma.documentChunk.createMany({
       data: chunks.map((chunk) => ({ organizationId: doc.organizationId, agentId: doc.agentId, documentId: doc.id, content: chunk.content, tokenCount: chunk.tokenCount, metadata: toJson(chunk.metadata) }))
     });
-    await embeddingQueue.add("embed-document", { documentId: doc.id });
-    await prisma.document.update({ where: { id: doc.id }, data: { status: "READY" } });
+    if (chunks.length) {
+      await embeddingQueue.add("embed-document", { documentId: doc.id });
+    } else {
+      await prisma.document.update({ where: { id: doc.id }, data: { status: "READY" } });
+    }
   } catch (error) {
     await prisma.document.update({ where: { id: doc.id }, data: { status: "FAILED", error: error instanceof Error ? error.message : "Processing failed" } });
   }
