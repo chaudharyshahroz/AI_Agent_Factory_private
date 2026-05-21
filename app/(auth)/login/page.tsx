@@ -4,10 +4,11 @@ import { LockKeyhole, Sparkles } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { getAdminHost } from "@/lib/utils/url";
 
 export default async function LoginPage() {
   const host = (await headers()).get("host")?.split(":")[0].toLowerCase();
-  const adminHost = (process.env.ADMIN_DOMAIN || (process.env.APP_DOMAIN ? `admin.${process.env.APP_DOMAIN}` : "admin.categent.com")).toLowerCase();
+  const adminHost = getAdminHost().toLowerCase();
   const redirectTo = host === adminHost ? "/admin" : "/dashboard";
 
   return (
