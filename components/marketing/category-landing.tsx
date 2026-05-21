@@ -17,7 +17,7 @@ export function CategoryLanding({ slug, title, description }: { slug: string; ti
             <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-300">{description}</p>
             <div className="mt-8"><GradientButton href="/dashboard/create-agent">Create category agent <ArrowRight className="h-4 w-4" /></GradientButton></div>
           </div>
-          <div className="rounded-lg border border-white/10 bg-white/[0.04] p-6 text-white">
+          <div className="premium-card rounded-xl p-6 text-white">
             <h2 className="text-xl font-bold">Recommended operating model</h2>
             <div className="mt-5 grid gap-4">
               <Info title="Knowledge to upload" items={category.knowledgeSources} />
@@ -32,9 +32,10 @@ export function CategoryLanding({ slug, title, description }: { slug: string; ti
           <SectionHeading eyebrow="Templates" title={`Launch ${category.name.toLowerCase()} agents from proven playbooks`} />
           <div className="mt-10 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {categoryTemplates.map((template) => (
-              <div key={template.name} className="rounded-lg border border-white/10 bg-white/[0.04] p-5 text-white">
+              <div key={template.name} className="premium-card rounded-xl p-5 text-white transition hover:-translate-y-1 hover:border-cyan-300/35">
                 <h3 className="font-semibold">{template.name}</h3>
                 <p className="mt-2 text-sm text-slate-400">{template.goal} agent with {template.tools.join(", ")}.</p>
+                <div className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-cyan-200">Use playbook <ArrowRight className="h-4 w-4" /></div>
               </div>
             ))}
           </div>
@@ -49,7 +50,7 @@ export function CategoryLanding({ slug, title, description }: { slug: string; ti
 
 function Info({ title, items }: { title: string; items: string[] }) {
   return (
-    <div className="rounded-md bg-slate-950/70 p-4">
+    <div className="rounded-lg border border-white/10 bg-slate-950/70 p-4">
       <p className="text-sm font-semibold text-cyan-200">{title}</p>
       <div className="mt-3 flex flex-wrap gap-2">
         {items.map((item) => <span key={item} className="rounded-full border border-white/10 px-3 py-1 text-xs text-slate-300">{item}</span>)}

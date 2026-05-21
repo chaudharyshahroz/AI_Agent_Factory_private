@@ -4,13 +4,16 @@ import { Button } from "@/components/ui/button";
 
 export function PageHeader({ title, text, actionHref, actionLabel }: { title: string; text?: string; actionHref?: string; actionLabel?: string }) {
   return (
-    <div className="mb-8 flex flex-col justify-between gap-4 md:flex-row md:items-end">
+    <div className="mb-8 overflow-hidden rounded-xl border border-slate-200 bg-white p-6 shadow-soft md:p-8">
+      <div className="absolute" />
+      <div className="flex flex-col justify-between gap-4 md:flex-row md:items-end">
       <div>
-        <p className="text-sm font-semibold uppercase tracking-[0.18em] text-indigo-600">Categent</p>
-        <h1 className="mt-2 text-3xl font-black tracking-tight md:text-5xl">{title}</h1>
+        <p className="text-sm font-semibold uppercase tracking-[0.18em] text-indigo-600">Categent command center</p>
+        <h1 className="mt-2 max-w-4xl text-3xl font-black tracking-tight text-slate-950 md:text-5xl">{title}</h1>
         {text ? <p className="mt-3 max-w-2xl text-slate-600">{text}</p> : null}
       </div>
-      {actionHref && actionLabel ? <Button asChild><Link href={actionHref} className="no-underline">{actionLabel}<ArrowRight className="h-4 w-4" /></Link></Button> : null}
+      {actionHref && actionLabel ? <Button asChild className="bg-gradient-to-r from-indigo-600 to-cyan-500 text-white shadow-glow"><Link href={actionHref} className="no-underline">{actionLabel}<ArrowRight className="h-4 w-4" /></Link></Button> : null}
+      </div>
     </div>
   );
 }
@@ -23,7 +26,7 @@ export function StatCard({ label, value, icon: Icon, tone = "indigo" }: { label:
     violet: "bg-violet-50 text-violet-600"
   };
   return (
-    <div className="rounded-lg border bg-white p-5 shadow-soft">
+    <div className="premium-light-card rounded-xl p-5 transition hover:-translate-y-0.5 hover:shadow-[0_20px_70px_rgba(15,23,42,0.12)]">
       <div className="flex items-center justify-between">
         <p className="text-sm text-slate-500">{label}</p>
         <span className={`flex h-10 w-10 items-center justify-center rounded-md ${tones[tone]}`}><Icon className="h-5 w-5" /></span>
@@ -41,15 +44,18 @@ export function StatusBadge({ children, tone = "slate" }: { children: React.Reac
     blue: "bg-blue-50 text-blue-700 ring-blue-200",
     slate: "bg-slate-100 text-slate-700 ring-slate-200"
   };
-  return <span className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ${tones[tone]}`}>{children}</span>;
+  return <span className={`inline-flex whitespace-nowrap rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ${tones[tone]}`}>{children}</span>;
 }
 
 export function EmptyState({ title, text, actionHref, actionLabel }: { title: string; text: string; actionHref?: string; actionLabel?: string }) {
   return (
-    <div className="rounded-lg border border-dashed bg-white p-10 text-center">
+    <div className="premium-light-card rounded-xl border-dashed p-10 text-center">
+      <div className="mx-auto mb-5 flex h-12 w-12 items-center justify-center rounded-md bg-gradient-to-br from-indigo-100 to-cyan-100 text-indigo-700">
+        <ArrowRight className="h-5 w-5" />
+      </div>
       <h3 className="text-xl font-bold">{title}</h3>
       <p className="mx-auto mt-2 max-w-xl text-sm leading-6 text-slate-500">{text}</p>
-      {actionHref && actionLabel ? <Button asChild className="mt-5"><Link href={actionHref} className="no-underline">{actionLabel}</Link></Button> : null}
+      {actionHref && actionLabel ? <Button asChild className="mt-5 bg-gradient-to-r from-indigo-600 to-cyan-500 text-white"><Link href={actionHref} className="no-underline">{actionLabel}</Link></Button> : null}
     </div>
   );
 }

@@ -38,29 +38,29 @@ export default async function DashboardPage() {
         <StatCard label="Failed tool calls" value={failedToolCalls} icon={ShieldCheck} tone="violet" />
       </div>
       <div className="mt-6 grid gap-6 xl:grid-cols-[1fr_0.75fr]">
-        <Card className="bg-white">
+        <Card className="premium-light-card rounded-xl">
           <div className="mb-5 flex items-center justify-between"><h2 className="text-xl font-bold">Messages over time</h2><StatusBadge tone="blue">Live metrics</StatusBadge></div>
           <MessageAreaChart />
         </Card>
-        <Card className="bg-white">
+        <Card className="premium-light-card rounded-xl">
           <div className="mb-5 flex items-center justify-between"><h2 className="text-xl font-bold">Tools and approvals</h2><StatusBadge>7 days</StatusBadge></div>
           <ToolBarChart />
         </Card>
       </div>
       <div className="mt-6 grid gap-6 xl:grid-cols-[1fr_0.85fr]">
-        <Card className="bg-white">
+        <Card className="premium-light-card rounded-xl">
           <h2 className="text-xl font-bold">Recent conversations</h2>
           <div className="mt-5 grid gap-3">
             {recentConversations.map((conversation) => (
-              <div key={conversation.id} className="rounded-md border p-4">
+              <div key={conversation.id} className="rounded-lg border border-slate-200 bg-white/85 p-4 transition hover:border-indigo-200 hover:shadow-soft">
                 <div className="flex items-center justify-between gap-3"><p className="font-semibold">{conversation.title || conversation.agent.name}</p><StatusBadge>{conversation.source}</StatusBadge></div>
                 <p className="mt-2 line-clamp-1 text-sm text-slate-500">{conversation.messages[0]?.content || "No messages yet"}</p>
               </div>
             ))}
-            {recentConversations.length === 0 ? <p className="text-sm text-slate-500">No conversations yet. Create and test your first agent.</p> : null}
+            {recentConversations.length === 0 ? <div className="rounded-lg border border-dashed border-slate-300 bg-slate-50 p-6 text-sm text-slate-500">No conversations yet. Create and test your first agent.</div> : null}
           </div>
         </Card>
-        <Card className="bg-slate-950 text-white">
+        <Card className="premium-card rounded-xl text-white">
           <h2 className="text-xl font-bold">Quick actions</h2>
           <div className="mt-5 grid gap-3">
             {[
