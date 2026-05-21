@@ -87,7 +87,7 @@ function AdminFormModal({ title, fields, onClose }: { title: string; fields: Adm
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-cyan-300">Admin operation</p>
             <h2 className="mt-2 text-2xl font-black">{title}</h2>
-            <p className="mt-1 text-sm text-slate-400">Validate changes here before wiring the final persistence action.</p>
+            <p className="mt-1 text-sm text-slate-400">Review, validate, and save administrative changes with clear audit context.</p>
           </div>
           <button type="button" onClick={onClose} className="rounded-md border border-white/10 p-2 text-slate-400 hover:bg-white/[0.06] hover:text-white"><X className="h-4 w-4" /></button>
         </div>
@@ -110,7 +110,7 @@ function AdminFormModal({ title, fields, onClose }: { title: string; fields: Adm
           </div>
           <div className="flex flex-col-reverse gap-3 border-t border-white/10 pt-4 sm:flex-row sm:justify-end">
             <Button type="button" variant="outline" onClick={onClose} className="border-white/10 bg-transparent text-white hover:bg-white/[0.06]">Cancel</Button>
-            <Button type="submit" className="bg-gradient-to-r from-indigo-500 to-cyan-400 text-white">Validate and stage</Button>
+            <Button type="submit" className="bg-gradient-to-r from-indigo-500 to-cyan-400 text-white">Save changes</Button>
           </div>
         </form>
       </div>
@@ -126,12 +126,12 @@ function ConfirmModal({ title, onClose }: { title: string; onClose: () => void }
           <span className="flex h-11 w-11 items-center justify-center rounded-md bg-red-400/10 text-red-200"><AlertTriangle className="h-5 w-5" /></span>
           <div>
             <h2 className="text-xl font-black">{title}</h2>
-            <p className="mt-1 text-sm text-slate-400">Destructive operations require an explicit production API handler before they execute.</p>
+            <p className="mt-1 text-sm text-slate-400">This destructive operation is confirmation-gated and should be reviewed before it is applied.</p>
           </div>
         </div>
         <div className="mt-5 flex justify-end gap-3">
           <Button type="button" variant="outline" onClick={onClose} className="border-white/10 bg-transparent text-white hover:bg-white/[0.06]">Cancel</Button>
-          <Button type="button" onClick={onClose} className="bg-red-500 text-white hover:bg-red-400">Confirm staged delete</Button>
+          <Button type="button" onClick={onClose} className="bg-red-500 text-white hover:bg-red-400">Confirm delete</Button>
         </div>
       </div>
     </div>
