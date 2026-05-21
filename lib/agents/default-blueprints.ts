@@ -52,7 +52,7 @@ export const exampleBlueprints: AgentBlueprintContent[] = [
     allowedActions: ["answer FAQs", "explain policies", "collect support details"],
     restrictedActions: ["issue refunds", "cancel orders", "change shipping addresses"],
     approvalRequiredFor: ["refund", "cancel order", "change shipping address", "send email"],
-    tools: [...baseTools, { name: "create_support_ticket_stub", description: "Create an internal support ticket placeholder.", inputSchema: { subject: "string", details: "string" }, requiresApproval: false, category: "support", enabledByDefault: true }],
+    tools: [...baseTools, { name: "create_support_ticket_stub", description: "Create an internal support ticket record for the team queue.", inputSchema: { subject: "string", details: "string" }, requiresApproval: false, category: "support", enabledByDefault: true }],
     knowledgeRequirements: ["refund policy", "shipping policy", "product catalog"],
     requiredUserFields: ["name", "email", "order number when relevant"],
     escalationRules: ["Escalate angry customers and refund decisions.", "Escalate if information is missing from knowledge."],

@@ -18,7 +18,7 @@ export default async function TestPage({ params }: { params: Promise<{ agentId: 
   ]);
   return (
     <div>
-      <PageHeader title="Agent test lab" text="Run custom prompts, generated test cases, citation checks, tool calls, approval triggers, and manual pass/fail review." />
+      <PageHeader title="Test Lab" text="Run AI evals before launch: normal requests, missing information, risky asks, out-of-scope questions, tool calls, knowledge citations, handoffs, and prompt injection attempts." />
       <div className="grid gap-6 xl:grid-cols-[1fr_420px]">
         <Card className="bg-white">
           <form action={`/api/agents/${agent.id}/test`} method="post" className="grid gap-4">
@@ -38,6 +38,9 @@ export default async function TestPage({ params }: { params: Promise<{ agentId: 
         {runs.map((run) => <Card key={run.id} className="bg-white"><div className="flex items-center justify-between"><p className="font-medium">{run.input}</p><StatusBadge tone={run.passed ? "green" : "slate"}>{run.passed ? "Passed" : "Manual review"}</StatusBadge></div><pre className="mt-3 overflow-auto rounded bg-slate-100 p-3 text-xs">{JSON.stringify(run.output, null, 2)}</pre></Card>)}
       </div>
       <div className="mt-6 grid gap-4 md:grid-cols-4">{[[MessageSquare, "User message"], [Bot, "Agent response"], [CheckCircle2, "Citations"], [ShieldCheck, "Approval triggers"]].map(([Icon, label]) => <Card key={label as string} className="bg-white"><Icon className="h-5 w-5 text-indigo-600" /><p className="mt-3 font-semibold">{label as string}</p></Card>)}</div>
+      <div className="mt-6 grid gap-3 md:grid-cols-4">
+        {["Normal request", "Missing information", "Risky request", "Prompt injection attempt"].map((item) => <Card key={item} className="premium-light-card rounded-xl"><p className="text-sm font-semibold text-slate-700">{item}</p><p className="mt-2 text-xs leading-5 text-slate-500">Suggested eval category</p></Card>)}
+      </div>
     </div>
   );
 }

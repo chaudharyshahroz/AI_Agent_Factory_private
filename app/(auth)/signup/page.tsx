@@ -19,17 +19,17 @@ export default function SignupPage() {
         <h2 className="text-2xl font-bold">Create your Categent account</h2>
         <p className="mt-2 text-sm text-slate-300">Your organization will be created automatically and you will be guided into onboarding.</p>
         <form action="/api/auth/signup" method="post" className="mt-6 grid gap-4">
-          <Input name="name" placeholder="Full name" required className="border-white/10 bg-white/10 text-white placeholder:text-slate-400" />
-          <Input name="organizationName" placeholder="Company or organization" required className="border-white/10 bg-white/10 text-white placeholder:text-slate-400" />
-          <select name="businessCategory" className="h-10 rounded-md border border-white/10 bg-slate-950 px-3 text-sm text-white">
+          <Input name="name" placeholder="Full name" required className="h-12 border-white/10 bg-white/10 text-white placeholder:text-slate-400" />
+          <Input name="organizationName" placeholder="Company or organization" required className="h-12 border-white/10 bg-white/10 text-white placeholder:text-slate-400" />
+          <select name="businessCategory" className="h-12 rounded-md border border-white/10 bg-slate-950 px-3 text-sm text-white">
             <option value="e-commerce">E-commerce</option>
             <option value="real-estate">Real estate</option>
             <option value="service-business">Service business</option>
             <option value="other">Other</option>
           </select>
-          <Input name="email" type="email" placeholder="Work email" required className="border-white/10 bg-white/10 text-white placeholder:text-slate-400" />
-          <Input name="password" type="password" placeholder="Password" minLength={8} required className="border-white/10 bg-white/10 text-white placeholder:text-slate-400" />
-          <Button type="submit" className="bg-gradient-to-r from-indigo-500 to-cyan-400">Create account</Button>
+          <Input name="email" type="email" placeholder="Work email" required className="h-12 border-white/10 bg-white/10 text-white placeholder:text-slate-400" />
+          <Input name="password" type="password" placeholder="Password" minLength={8} required className="h-12 border-white/10 bg-white/10 text-white placeholder:text-slate-400" />
+          <Button type="submit" className="h-12 bg-gradient-to-r from-indigo-500 to-cyan-400">Create account</Button>
         </form>
         <p className="mt-4 text-sm text-slate-300">Already have an account? <Link href="/login" className="text-cyan-200">Log in</Link></p>
       </Card>

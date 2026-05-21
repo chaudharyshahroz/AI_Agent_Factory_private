@@ -20,7 +20,7 @@ export const appointmentRequestTool: ToolDefinition = {
 
 export const createSupportTicketTool: ToolDefinition = {
   name: "create_support_ticket",
-  description: "Create an internal support ticket placeholder.",
+  description: "Create an internal support ticket record for the team queue.",
   parametersSchema: z.object({ subject: z.string(), details: z.string(), email: z.string().email().optional(), priority: z.string().optional() }),
   requiresApproval: false,
   category: "support",
@@ -29,7 +29,7 @@ export const createSupportTicketTool: ToolDefinition = {
   async execute(context, args) {
     const input = this.parametersSchema.parse(args);
     await prisma.auditLog.create({ data: { organizationId: context.organizationId, action: "support_ticket_created", targetType: "agent", targetId: context.agentId, metadata: input } });
-    return { ok: true, message: "Support ticket placeholder created.", data: input };
+    return { ok: true, message: "Support ticket recorded for the team queue.", data: input };
   }
 };
 

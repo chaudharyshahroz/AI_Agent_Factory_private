@@ -26,7 +26,7 @@ export default async function DashboardPage() {
   ]) : [0, 0, 0, 0, 0, 0, 0, 0, []];
   return (
     <div>
-      <PageHeader title="Agent operations command center" text="Monitor live agents, usage, conversations, tool calls, approvals, knowledge health, and deployment readiness." actionHref="/dashboard/create-agent" actionLabel="Create agent" />
+      <PageHeader title="Agent OS overview" text="Monitor every agent, conversation, citation, tool call, approval, deployment, and usage signal from one operating system." actionHref="/dashboard/create-agent/ai-guided" actionLabel="Build an agent" />
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         <StatCard label="Agents" value={agents} icon={Bot} />
         <StatCard label="Deployed agents" value={deployedAgents} icon={CheckCircle2} tone="emerald" />
@@ -64,12 +64,34 @@ export default async function DashboardPage() {
           <h2 className="text-xl font-bold">Quick actions</h2>
           <div className="mt-5 grid gap-3">
             {[
-              ["/dashboard/create-agent", "Create a category agent"],
-              ["/dashboard/knowledge", "Review knowledge status"],
-              ["/dashboard/tools", "Configure tool permissions"],
-              ["/dashboard/approvals", "Review pending approvals"]
+              ["/dashboard/create-agent/ai-guided", "Describe work and build an agent"],
+              ["/dashboard/knowledge", "Open Knowledge Studio"],
+              ["/dashboard/tools", "Open Tool Store"],
+              ["/dashboard/approvals", "Review human approvals"]
             ].map(([href, label]) => <Button asChild key={href} className="justify-between bg-white/10 text-white hover:bg-white/15"><Link href={href} className="no-underline">{label}</Link></Button>)}
           </div>
+        </Card>
+      </div>
+      <div className="mt-6 grid gap-6 xl:grid-cols-[0.9fr_1.1fr]">
+        <Card className="premium-light-card rounded-xl">
+          <h2 className="text-xl font-bold">Launch checklist</h2>
+          <div className="mt-5 grid gap-3">
+            {["Create your first agent", "Upload trusted knowledge", "Run test cases", "Configure widget domain", "Review analytics after launch"].map((item, index) => (
+              <div key={item} className="flex items-center gap-3 rounded-lg border border-slate-200 bg-white p-3 text-sm text-slate-700">
+                <span className={`flex h-7 w-7 items-center justify-center rounded-md text-xs font-bold ${index < 1 ? "bg-emerald-50 text-emerald-700" : "bg-slate-100 text-slate-500"}`}>{index + 1}</span>
+                {item}
+              </div>
+            ))}
+          </div>
+        </Card>
+        <Card className="premium-light-card rounded-xl">
+          <h2 className="text-xl font-bold">Agent health snapshot</h2>
+          <div className="mt-5 grid gap-3 md:grid-cols-3">
+            {["Knowledge ready", "Tools governed", "Widget protected"].map((item) => (
+              <div key={item} className="rounded-lg bg-slate-50 p-4 text-sm font-semibold text-slate-700 ring-1 ring-slate-200">{item}</div>
+            ))}
+          </div>
+          <p className="mt-4 text-sm leading-6 text-slate-500">Keep agents healthy by reviewing citations, failed tool calls, pending approvals, and test coverage after every blueprint change.</p>
         </Card>
       </div>
     </div>

@@ -32,17 +32,29 @@ export default async function AgentPage({ params }: { params: Promise<{ agentId:
   return (
     <div>
       <PageHeader title={agent.name} text={`${agent.categorySlug} agent · ${agent.description || "Configured from a Categent category template."}`} actionHref={`/dashboard/agents/${agent.id}/test`} actionLabel="Test agent" />
-      <div className="mb-6 flex flex-wrap gap-2"><StatusBadge tone={agent.status === "DEPLOYED" ? "green" : "blue"}>{agent.status}</StatusBadge><StatusBadge>{deployment?.status || "Deployment not created"}</StatusBadge></div>
+      <div className="mb-6 grid gap-4 lg:grid-cols-[1fr_320px]">
+        <div className="premium-light-card rounded-2xl p-5">
+          <div className="flex flex-wrap gap-2"><StatusBadge tone={agent.status === "DEPLOYED" ? "green" : "blue"}>{agent.status}</StatusBadge><StatusBadge>{deployment?.status || "Deployment not created"}</StatusBadge></div>
+          <h2 className="mt-4 text-xl font-black">Agent readiness</h2>
+          <p className="mt-2 text-sm leading-6 text-slate-600">Review blueprint, knowledge, tools, tests, deployment, conversations, analytics, and logs from one control center.</p>
+          <div className="mt-4 h-2 rounded-full bg-slate-100"><div className="h-2 w-[78%] rounded-full bg-gradient-to-r from-indigo-600 to-cyan-500" /></div>
+        </div>
+        <div className="premium-card rounded-2xl p-5 text-white">
+          <p className="text-sm text-slate-400">Next best action</p>
+          <h3 className="mt-2 text-xl font-black">Run a test before deployment</h3>
+          <p className="mt-2 text-sm leading-6 text-slate-300">Suggested tests check citations, tool calls, restricted actions, and approval triggers.</p>
+        </div>
+      </div>
       <div className="grid gap-4 md:grid-cols-4">
         <StatCard label="Conversations" value={conversations} icon={MessageSquare} />
         <StatCard label="Messages" value={messages} icon={Bot} tone="cyan" />
         <StatCard label="Pending approvals" value={approvals} icon={ShieldCheck} tone="violet" />
         <StatCard label="Knowledge docs" value={documents} icon={Database} tone="emerald" />
       </div>
-      <div className="mt-6 grid gap-4 lg:grid-cols-4">
-        {tabs.map(([slug, label, Icon]) => <Link key={slug as string} href={`/dashboard/agents/${agent.id}/${slug}`} className="rounded-lg border bg-white p-4 text-slate-700 no-underline transition hover:border-indigo-300 hover:shadow-soft"><Icon className="h-5 w-5 text-indigo-600" /><p className="mt-3 font-semibold">{label as string}</p></Link>)}
+      <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        {tabs.map(([slug, label, Icon]) => <Link key={slug as string} href={`/dashboard/agents/${agent.id}/${slug}`} className="rounded-2xl border border-slate-200 bg-white p-4 text-slate-700 no-underline shadow-soft transition hover:-translate-y-0.5 hover:border-indigo-300 hover:shadow-[0_20px_70px_rgba(15,23,42,0.12)]"><Icon className="h-5 w-5 text-indigo-600" /><p className="mt-3 font-semibold">{label as string}</p></Link>)}
       </div>
-      <Card className="mt-6 bg-white">
+      <Card className="mt-6 premium-light-card rounded-2xl">
         <h2 className="text-xl font-bold">Recent test runs</h2>
         <div className="mt-4 grid gap-3">{latestRuns.map((run) => <div key={run.id} className="rounded-md border p-3 text-sm"><p className="font-medium">{run.input}</p><p className="mt-1 text-slate-500">{run.createdAt.toLocaleString()}</p></div>)}</div>
       </Card>

@@ -22,23 +22,23 @@ export default function ContactPage() {
         </div>
         <Card className="border-white/10 bg-white/[0.06] text-white">
           <form action="/api/contact" method="post" className="grid gap-4">
-            <Input name="name" placeholder="Name" className="border-white/10 bg-white/10 text-white placeholder:text-slate-400" />
-            <Input name="email" type="email" placeholder="Work email" required className="border-white/10 bg-white/10 text-white placeholder:text-slate-400" />
-            <Input name="company" placeholder="Company" className="border-white/10 bg-white/10 text-white placeholder:text-slate-400" />
-            <select name="categoryInterest" className="h-10 rounded-md border border-white/10 bg-slate-950 px-3 text-sm text-white">
+            <Input name="name" placeholder="Name" className="h-12 border-white/10 bg-white/10 text-white placeholder:text-slate-400" />
+            <Input name="email" type="email" placeholder="Work email" required className="h-12 border-white/10 bg-white/10 text-white placeholder:text-slate-400" />
+            <Input name="company" placeholder="Company" className="h-12 border-white/10 bg-white/10 text-white placeholder:text-slate-400" />
+            <select name="categoryInterest" className="h-12 rounded-md border border-white/10 bg-slate-950 px-3 text-sm text-white">
               <option>E-commerce</option>
               <option>Real estate</option>
               <option>Service business</option>
               <option>Other category</option>
             </select>
-            <select name="companySize" className="h-10 rounded-md border border-white/10 bg-slate-950 px-3 text-sm text-white">
+            <select name="companySize" className="h-12 rounded-md border border-white/10 bg-slate-950 px-3 text-sm text-white">
               <option>1-5 people</option>
               <option>6-25 people</option>
               <option>26-100 people</option>
               <option>100+ people</option>
             </select>
             <Textarea name="message" required placeholder="Tell us what kind of agent you want to build" className="border-white/10 bg-white/10 text-white placeholder:text-slate-400" />
-            <Button type="submit" className="bg-gradient-to-r from-indigo-500 to-cyan-400">Request demo</Button>
+            <Button type="submit" className="h-12 bg-gradient-to-r from-indigo-500 to-cyan-400">Request demo</Button>
           </form>
         </Card>
       </div>

@@ -23,10 +23,21 @@
 }
 
 * { @apply border-border; }
+html, body { max-width: 100%; overflow-x: hidden; }
 body {
   @apply bg-background text-foreground antialiased;
   font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   text-rendering: geometricPrecision;
+}
+
+@media (max-width: 640px) {
+  body { font-size: 15px; }
+  .premium-card,
+  .premium-light-card,
+  .glass-panel,
+  .light-panel {
+    border-radius: 1rem;
+  }
 }
 a { @apply text-inherit underline-offset-4 hover:underline; }
 ::selection { background: rgba(34, 211, 238, 0.26); color: white; }

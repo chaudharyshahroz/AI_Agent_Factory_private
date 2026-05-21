@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ArrowRight, CheckCircle2, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { AnimatedWorkflow } from "@/components/marketing/animated-workflow";
+import { HeroAgentBuilderMockup } from "@/components/marketing/product-showcase";
 import {
   brand,
   categories,
@@ -101,12 +102,12 @@ export function HeroSection() {
         </div>
         <div className="grid items-center gap-12 lg:grid-cols-[0.9fr_1.1fr]">
           <div>
-            <h1 className="max-w-5xl text-5xl font-black tracking-tight md:text-7xl"><span className="text-gradient">{brand.headline}</span></h1>
-            <p className="mt-6 max-w-3xl text-lg leading-8 text-slate-300 md:text-xl">{brand.subheadline}</p>
+            <h1 className="max-w-5xl text-4xl font-black tracking-tight sm:text-5xl md:text-7xl"><span className="text-gradient">Build AI agents for your business without starting from scratch.</span></h1>
+            <p className="mt-6 max-w-3xl text-lg leading-8 text-slate-300 md:text-xl">Choose your industry, answer a few simple questions, upload your knowledge, and launch an AI agent for support, sales, bookings, and operations.</p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <GradientButton href="/signup">Create your first agent <ArrowRight className="h-4 w-4" /></GradientButton>
+              <GradientButton href="/dashboard/create-agent">Start building <ArrowRight className="h-4 w-4" /></GradientButton>
               <Button asChild className="h-12 border border-white/15 bg-white/10 px-6 text-white hover:bg-white/15">
-                <Link href="/templates" className="no-underline">Explore templates</Link>
+                <Link href="#how-it-works" className="no-underline">Watch how it works</Link>
               </Button>
             </div>
             <div className="mt-8 grid max-w-3xl gap-3 sm:grid-cols-2">
@@ -118,7 +119,7 @@ export function HeroSection() {
               ))}
             </div>
           </div>
-          <AnimatedWorkflow />
+          <HeroAgentBuilderMockup />
         </div>
       </div>
     </section>
@@ -127,7 +128,7 @@ export function HeroSection() {
 
 export function HowItWorks() {
   return (
-    <section className="bg-slate-950 px-4 py-20">
+    <section id="how-it-works" className="bg-slate-950 px-4 py-20">
       <div className="mx-auto max-w-7xl">
         <SectionHeading align="center" eyebrow="How it works" title="From requirement to deployed agent" text="Categent turns business context into a governed AI agent system with testing, tools, and monitoring built in." />
         <div className="mt-12 grid gap-3 md:grid-cols-4">
@@ -135,13 +136,27 @@ export function HowItWorks() {
             <div key={step} className="premium-card rounded-lg p-5 text-white transition hover:-translate-y-1 hover:border-cyan-300/35">
               <span className="inline-flex h-8 w-8 items-center justify-center rounded-md bg-cyan-300/10 text-sm font-semibold text-cyan-200 ring-1 ring-cyan-300/20">0{index + 1}</span>
               <h3 className="mt-4 text-lg font-semibold">{step}</h3>
-              <p className="mt-2 text-sm leading-6 text-slate-400">Configure the {step.toLowerCase()} stage with guardrails and visibility.</p>
+              <p className="mt-2 text-sm leading-6 text-slate-400">{stepCopy(step)}</p>
             </div>
           ))}
         </div>
       </div>
     </section>
   );
+}
+
+function stepCopy(step: string) {
+  const copy: Record<string, string> = {
+    Category: "Pick the business type so Categent loads the right templates and safety rules.",
+    Template: "Start from a proven playbook for support, sales, bookings, or operations.",
+    Requirements: "Describe the outcome in plain language, not technical prompts.",
+    Knowledge: "Upload policies, FAQs, listings, catalogs, and service documents.",
+    Tools: "Enable only the tools this agent is allowed to use.",
+    Blueprint: "Generate instructions, actions, restrictions, tests, and deployment guidance.",
+    Test: "Run suggested scenarios and check citations, tool calls, and approvals.",
+    Deploy: "Copy the widget script and publish on approved domains."
+  };
+  return copy[step] ?? "Monitor the agent with logs, usage, approvals, and analytics.";
 }
 
 export function CategoryCards() {
@@ -194,7 +209,7 @@ export function TemplateGrid({ limit }: { limit?: number }) {
             <span className="rounded-full bg-slate-950/80 px-3 py-1 text-xs text-slate-300 ring-1 ring-white/10">{template.setupTime}</span>
           </div>
           <h3 className="mt-4 text-lg font-semibold">{template.name}</h3>
-          <p className="mt-2 text-sm text-slate-400">{template.goal} workflow with {template.approval.toLowerCase()} approval level.</p>
+          <p className="mt-2 text-sm text-slate-400">{templateBlurb(template.name, template.goal, template.approval)}</p>
           <div className="mt-4 grid gap-2 sm:grid-cols-2">
             {template.tools.map((tool) => <span key={tool} className="rounded-md border border-white/10 bg-white/[0.035] px-2 py-2 text-xs text-slate-300">{tool}</span>)}
           </div>
@@ -207,11 +222,22 @@ export function TemplateGrid({ limit }: { limit?: number }) {
   );
 }
 
+function templateBlurb(name: string, goal: string, approval: string) {
+  if (name.includes("Refund")) return "Collect refund details, explain policy, create a support trail, and require human approval before action.";
+  if (name.includes("Buyer")) return "Qualify buyers by budget, location, timeline, and property type before handing off hot leads.";
+  if (name.includes("Appointment")) return "Collect booking details, confirm intent, and request approval before calendar changes.";
+  if (name.includes("Product")) return "Ask helpful questions and recommend products from uploaded catalog knowledge.";
+  return `Move ${goal.toLowerCase()} requests from first message to a reviewed next step with source-grounded answers and ${approval.toLowerCase()} guardrails.`;
+}
+
 export function WorkflowPreview() {
   return (
     <section className="bg-slate-950 px-4 py-20">
       <div className="mx-auto max-w-7xl">
         <SectionHeading align="center" eyebrow="Workflow visibility" title="Every agent run follows a visible control path" />
+        <div className="mx-auto mt-10 max-w-5xl">
+          <AnimatedWorkflow />
+        </div>
         <div className="mt-10 grid gap-3 md:grid-cols-4 lg:grid-cols-8">
           {["Start", "User Message", "Moderation", "Knowledge Search", "Tool Decision", "Human Approval", "Response", "Log Event"].map((node, index) => (
             <div key={node} className="relative rounded-lg border border-cyan-300/20 bg-cyan-300/10 p-4 text-center text-sm font-semibold text-cyan-50 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]">
@@ -295,7 +321,7 @@ export function DashboardPreview() {
   return (
     <section className="mesh-band px-4 py-20">
       <div className="mx-auto max-w-7xl">
-        <SectionHeading align="center" eyebrow="Dashboard preview" title="Monitor every conversation, tool call, and approval" />
+        <SectionHeading align="center" eyebrow="Agent OS control" title="Monitor every conversation, tool call, and approval" />
         <div className="premium-card mt-10 rounded-xl p-3 shadow-glow">
           <div className="rounded-lg border border-white/10 bg-slate-950/75">
             <div className="flex items-center justify-between border-b border-white/10 px-4 py-3">

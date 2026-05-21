@@ -19,10 +19,10 @@ export default async function LoginPage() {
         <p className="mt-2 text-sm text-slate-300">Monitor agents, approvals, knowledge, tests, and deployments.</p>
         <form action="/api/auth/login" method="post" className="mt-6 grid gap-4">
           <input type="hidden" name="redirectTo" value={redirectTo} />
-          <Input name="email" type="email" placeholder="Email" required className="border-white/10 bg-white/10 text-white placeholder:text-slate-400" />
-          <Input name="password" type="password" placeholder="Password" required className="border-white/10 bg-white/10 text-white placeholder:text-slate-400" />
+          <Input name="email" type="email" placeholder="Email" required className="h-12 border-white/10 bg-white/10 text-white placeholder:text-slate-400" />
+          <Input name="password" type="password" placeholder="Password" required className="h-12 border-white/10 bg-white/10 text-white placeholder:text-slate-400" />
           <label className="flex items-center gap-2 text-sm text-slate-300"><input type="checkbox" name="remember" className="rounded" /> Remember this device</label>
-          <Button type="submit" className="bg-gradient-to-r from-indigo-500 to-cyan-400"><Sparkles className="h-4 w-4" /> Log in</Button>
+          <Button type="submit" className="h-12 bg-gradient-to-r from-indigo-500 to-cyan-400"><Sparkles className="h-4 w-4" /> Log in</Button>
         </form>
         <p className="mt-4 text-sm text-slate-300">No account? <Link href="/signup" className="text-cyan-200">Sign up</Link></p>
         <Link className="mt-2 block text-sm text-slate-400" href="/forgot-password">Forgot password?</Link>

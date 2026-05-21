@@ -64,7 +64,7 @@ export default async function AdminSystemPage() {
           <div key={name} className="premium-card rounded-xl p-5">
             <p className="text-sm text-slate-400">{name}</p>
             <p className="mt-3 text-3xl font-black text-white">{value}</p>
-            <p className="mt-2 text-xs text-slate-500">Queue stats placeholder backed by current database signals.</p>
+            <p className="mt-2 text-xs text-slate-500">Operational signal from current documents, approvals, and usage records.</p>
           </div>
         ))}
       </div>

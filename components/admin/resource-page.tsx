@@ -28,7 +28,7 @@ export function AdminResourcePage({
     <div>
       <AdminPageHeader title={title} text={text} />
       {stats?.length ? (
-        <div className="mb-8 grid gap-4 md:grid-cols-3">
+        <div className="mb-8 grid gap-4 md:grid-cols-3 xl:grid-cols-4">
           {stats.map((stat) => <AdminStatCard key={stat.label} {...stat} />)}
         </div>
       ) : null}

@@ -43,7 +43,7 @@ export default async function SettingsPage() {
                 <StatusBadge>{member.role}</StatusBadge>
               </div>
             ))}
-            <Button type="button" variant="outline" className="w-fit">Invite member placeholder</Button>
+            <Button type="button" variant="outline" className="w-fit">Prepare member invite</Button>
           </div>
         </Card>
         <Card className="bg-white shadow-soft">

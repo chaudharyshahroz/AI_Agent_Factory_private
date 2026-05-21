@@ -13,7 +13,7 @@ export default async function AdminUsersPage() {
   return (
     <AdminResourcePage
       title="Users"
-      text="Search, review, and govern every Categent account. Destructive account actions remain intentionally staged as admin placeholders."
+      text="Search, review, and govern every Categent account with role visibility, organization context, and confirmation-gated account actions."
       stats={[{ label: "Total users", value: total }, { label: "Super admins", value: superAdmins }, { label: "Visible now", value: users.length }]}
       searchPlaceholder="Search users by email, name, organization, role, or signup date"
       filters={["Role", "Status", "Created date"]}

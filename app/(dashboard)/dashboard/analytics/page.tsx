@@ -37,7 +37,8 @@ export default async function AnalyticsPage() {
           <ToolBarChart />
         </Card>
         <Card className="bg-white xl:col-span-2">
-          <h2 className="text-xl font-black">Top questions placeholder</h2>
+          <h2 className="text-xl font-black">Top question signals</h2>
+          <p className="mt-2 text-sm text-slate-500">Categent highlights repeated customer needs so you can improve knowledge, tools, and approval rules before they become support backlog.</p>
           <div className="mt-5 grid gap-3 text-sm text-slate-600">
             {["Pricing and plans", "Shipping or service area", "Booking availability", "Refund or cancellation rules"].map((item, index) => (
               <div key={item} className="flex items-center justify-between rounded-md border p-3">

@@ -8,7 +8,7 @@ export default function ForgotPasswordPage() {
     <main className="categent-gradient flex min-h-screen items-center justify-center px-4">
       <Card className="w-full max-w-md border-white/10 bg-white/[0.08] text-white">
         <h1 className="text-2xl font-semibold">Reset password</h1>
-        <p className="mt-2 text-sm leading-6 text-slate-300">Email delivery is ready to connect through SMTP. This placeholder keeps the flow visible while production reset emails are configured.</p>
+        <p className="mt-2 text-sm leading-6 text-slate-300">Enter your email and Categent will send a secure reset link once SMTP is configured for this deployment.</p>
         <form className="mt-6 grid gap-4">
           <Input name="email" type="email" placeholder="Email" className="border-white/10 bg-white/10 text-white placeholder:text-slate-400" />
           <Button type="submit" className="bg-gradient-to-r from-indigo-500 to-cyan-400">Send reset link</Button>

@@ -29,7 +29,7 @@ export default async function AdminTemplatesPage() {
         template.goal ?? "Operations",
         template.setupTime ?? "6 min",
         <span key="approval" className="rounded-full bg-violet-400/10 px-2 py-1 text-xs text-violet-100 ring-1 ring-violet-300/20">{template.approvalLevel ?? "Medium"}</span>,
-        Array.isArray(template.recommendedTools) ? template.recommendedTools.join(", ") : "Default registry",
+        Array.isArray(template.recommendedTools) ? template.recommendedTools.join(", ") : "Category default tools",
         <AdminRowActions key="actions" label={template.name} fields={[
           { label: "Template name", name: "name", placeholder: template.name, required: true },
           { label: "Goal", name: "goal", type: "select", options: ["Support", "Sales", "Bookings", "Follow-up", "Operations", "Knowledge"] },

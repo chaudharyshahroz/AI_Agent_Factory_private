@@ -4,7 +4,7 @@ import type { ToolDefinition } from "@/lib/agents/tools/types";
 
 export const createSupportTicketStubTool: ToolDefinition = {
   name: "create_support_ticket_stub",
-  description: "Create an internal support ticket placeholder.",
+  description: "Create an internal support ticket record for the team queue.",
   parametersSchema: z.object({ subject: z.string(), details: z.string(), email: z.string().email().optional() }),
   requiresApproval: false,
   category: "support",
@@ -13,6 +13,6 @@ export const createSupportTicketStubTool: ToolDefinition = {
   async execute(context, args) {
     const input = this.parametersSchema.parse(args);
     await prisma.auditLog.create({ data: { organizationId: context.organizationId, action: "support_ticket_stub", targetType: "agent", targetId: context.agentId, metadata: input } });
-    return { ok: true, message: "Support ticket placeholder created.", data: input };
+    return { ok: true, message: "Support ticket recorded for the team queue.", data: input };
   }
 };

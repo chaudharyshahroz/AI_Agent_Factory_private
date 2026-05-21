@@ -1,21 +1,29 @@
-import { FinalCta, SectionHeading, SecuritySection } from "@/components/marketing/sections";
+import { LockKeyhole, ShieldCheck, UserCheck } from "lucide-react";
+import { AdminControlPreview, FinalAgentOSCTA } from "@/components/marketing/agent-os";
+import { SectionHeading, SecuritySection } from "@/components/marketing/sections";
 
 export default function SecurityPage() {
   return (
     <main className="bg-slate-950">
       <section className="categent-gradient px-4 py-20">
-        <SectionHeading align="center" eyebrow="Security" title="Agents that act with guardrails" text="Categent is built for role-based access, auditability, tenant isolation, domain controls, safe tool execution, and human approval." />
-      </section>
-      <SecuritySection />
-      <section className="px-4 py-16">
-        <div className="mx-auto max-w-5xl rounded-lg border border-white/10 bg-white/[0.04] p-8 text-white">
-          <h2 className="text-2xl font-bold">Governance model</h2>
-          <div className="mt-6 grid gap-4 md:grid-cols-2">
-            {["LOW tools can run automatically.", "MEDIUM tools are configurable by the organization.", "HIGH tools require approval by default.", "CRITICAL actions always require human approval."].map((rule) => <p key={rule} className="rounded-md bg-slate-900 p-4 text-sm text-slate-300">{rule}</p>)}
-          </div>
+        <SectionHeading align="center" eyebrow="Security" title="Agents that act inside your rules" text="Categent is built around private server-side secrets, role-based access, tenant isolation, safe tool execution, domain allowlists, audit logs, and human approval before risky actions." />
+        <div className="mx-auto mt-10 grid max-w-5xl gap-4 md:grid-cols-3">
+          {[
+            [LockKeyhole, "Private by default", "OpenAI, Stripe, database, and integration secrets stay server-side."],
+            [ShieldCheck, "Approval before risk", "Refunds, bookings, outbound messages, and high-impact actions pause for review."],
+            [UserCheck, "Role-aware controls", "Owners/admins approve actions while members and viewers stay limited."]
+          ].map(([Icon, title, text]) => (
+            <div key={title as string} className="rounded-2xl border border-white/10 bg-white/[0.06] p-5 text-white shadow-glow">
+              <Icon className="h-6 w-6 text-cyan-300" />
+              <h3 className="mt-4 font-black">{title as string}</h3>
+              <p className="mt-2 text-sm leading-6 text-slate-300">{text as string}</p>
+            </div>
+          ))}
         </div>
       </section>
-      <FinalCta />
+      <SecuritySection />
+      <AdminControlPreview />
+      <FinalAgentOSCTA />
     </main>
   );
 }

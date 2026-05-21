@@ -141,14 +141,23 @@ export const tools = [
   { name: "human_handoff", label: "Human Handoff", icon: Handshake, category: "Support", risk: "MEDIUM", approval: false, description: "Creates a handoff request when the agent needs a person." },
   { name: "create_internal_lead", label: "Lead Capture", icon: UserRoundPlus, category: "Sales", risk: "LOW", approval: false, description: "Stores qualified visitor details as a lead." },
   { name: "appointment_request", label: "Appointment Request", icon: CalendarClock, category: "Booking", risk: "HIGH", approval: true, description: "Collects booking information and creates a pending approval." },
-  { name: "create_support_ticket", label: "Support Ticket", icon: TicketCheck, category: "Support", risk: "LOW", approval: false, description: "Creates an internal support ticket placeholder." },
+  { name: "create_support_ticket", label: "Support Ticket", icon: TicketCheck, category: "Support", risk: "LOW", approval: false, description: "Creates an internal support ticket record for the team queue." },
   { name: "product_search_from_knowledge", label: "Product Search", icon: PackageSearch, category: "E-commerce", risk: "LOW", approval: false, description: "Finds product details from uploaded catalogs and docs." },
   { name: "collect_customer_info", label: "Collect Customer Info", icon: ClipboardCheck, category: "CRM", risk: "LOW", approval: false, description: "Structures name, email, phone, intent, and notes." },
   { name: "send_internal_notification", label: "Internal Notification", icon: Bell, category: "Notification", risk: "HIGH", approval: true, description: "Prepares Slack/email notifications with review controls." },
   { name: "webhook_stub", label: "Webhook", icon: PlugZap, category: "Automation", risk: "HIGH", approval: true, description: "Sends a server-side webhook when configured." },
   { name: "order_lookup_stub", label: "Order Lookup", icon: Database, category: "E-commerce", risk: "MEDIUM", approval: false, description: "Prepared order lookup stub for future Shopify/WooCommerce sync." },
   { name: "email_draft", label: "Email Draft", icon: Mail, category: "Communication", risk: "HIGH", approval: true, description: "Drafts email copy for human review before sending." },
-  { name: "whatsapp_placeholder", label: "WhatsApp Placeholder", icon: MessageSquare, category: "Communication", risk: "HIGH", approval: true, description: "Business workflow messaging placeholder with strict guardrails." }
+  { name: "whatsapp_placeholder", label: "WhatsApp Workflow", icon: MessageSquare, category: "Communication", risk: "HIGH", approval: true, description: "Prepares guarded WhatsApp business workflows for support, lead follow-up, and appointment reminders." },
+  { name: "quote_request", label: "Quote Request", icon: FileText, category: "Sales", risk: "MEDIUM", approval: true, description: "Collects scope, timeline, and budget so a human can prepare a quote." },
+  { name: "feedback_collector", label: "Feedback Collector", icon: ClipboardCheck, category: "Support", risk: "LOW", approval: false, description: "Collects structured feedback, ratings, and improvement notes." },
+  { name: "faq_answer", label: "FAQ Answer", icon: MessageSquare, category: "Knowledge", risk: "LOW", approval: false, description: "Answers common questions from approved FAQs and source documents." },
+  { name: "property_matching_stub", label: "Property Matching", icon: Home, category: "Real estate", risk: "MEDIUM", approval: false, description: "Matches buyer needs with uploaded listings and area notes." },
+  { name: "availability_request", label: "Availability Request", icon: CalendarClock, category: "Booking", risk: "MEDIUM", approval: true, description: "Collects preferred dates and times before a booking is approved." },
+  { name: "crm_contact_stub", label: "CRM Contact", icon: UserRoundPlus, category: "CRM", risk: "HIGH", approval: true, description: "Prepares a contact record for future CRM sync or internal review." },
+  { name: "complaint_escalation", label: "Complaint Escalation", icon: ShieldCheck, category: "Support", risk: "HIGH", approval: true, description: "Escalates sensitive complaints with context and conversation history." },
+  { name: "review_reply_draft", label: "Review Reply Draft", icon: Mail, category: "Follow-up", risk: "HIGH", approval: true, description: "Drafts review replies for human approval before publishing." },
+  { name: "follow_up_reminder", label: "Follow-up Reminder", icon: Bell, category: "Notification", risk: "MEDIUM", approval: true, description: "Creates a reminder for a human to follow up with a lead or customer." }
 ];
 
 export const integrations = [
@@ -188,11 +197,11 @@ export const securityControls = [
 
 export const dashboardNav = [
   { href: "/dashboard", label: "Overview", icon: Activity },
-  { href: "/dashboard/create-agent", label: "Create Agent", icon: Sparkles },
+  { href: "/dashboard/create-agent", label: "Agent Builder", icon: Sparkles },
   { href: "/dashboard/agents", label: "Agents", icon: Bot },
-  { href: "/dashboard/conversations", label: "Conversations", icon: MessageSquare },
-  { href: "/dashboard/knowledge", label: "Knowledge", icon: Database },
-  { href: "/dashboard/tools", label: "Tools", icon: PlugZap },
+  { href: "/dashboard/conversations", label: "Agent Inbox", icon: MessageSquare },
+  { href: "/dashboard/knowledge", label: "Knowledge Studio", icon: Database },
+  { href: "/dashboard/tools", label: "Tool Store", icon: PlugZap },
   { href: "/dashboard/approvals", label: "Approvals", icon: ShieldCheck },
   { href: "/dashboard/deployments", label: "Deployments", icon: Globe2 },
   { href: "/dashboard/analytics", label: "Analytics", icon: BarChart3 },

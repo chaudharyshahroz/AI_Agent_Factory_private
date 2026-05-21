@@ -23,7 +23,7 @@ export default async function DeployPage({ params }: { params: Promise<{ agentId
 </script>` : "";
   return (
     <div>
-      <PageHeader title="Deployment center" text="Deploy the website widget, manage public keys, allowed domains, branding, welcome message, and live status." />
+      <PageHeader title="Widget Studio" text="Deploy the website widget, preview desktop and mobile behavior, manage public keys, allowed domains, assistant branding, welcome message, and deployment health." />
       <div className="grid gap-6 xl:grid-cols-[1fr_380px]">
         <Card className="premium-light-card rounded-xl">
           {deployment ? (
