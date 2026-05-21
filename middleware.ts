@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getAdminHost, getAppUrl } from "@/lib/utils/url";
 
 const ADMIN_ALIASES = [
   "users",
@@ -22,7 +23,7 @@ const PUBLIC_ADMIN_PATHS = ["/login", "/signup", "/forgot-password"];
 
 export function middleware(request: NextRequest) {
   const host = request.headers.get("host")?.split(":")[0].toLowerCase();
-  const adminHost = getAdminDomain();
+  const adminHost = getAdminHost().toLowerCase();
   if (!host || host !== adminHost) return NextResponse.next();
 
   const { pathname } = request.nextUrl;
@@ -39,18 +40,7 @@ export function middleware(request: NextRequest) {
 
   if (PUBLIC_ADMIN_PATHS.includes(pathname)) return NextResponse.next();
 
-  const appUrl = process.env.APP_URL;
-  if (appUrl) {
-    return NextResponse.redirect(new URL(pathname, appUrl));
-  }
-
-  return rewriteTo(request, "/admin");
-}
-
-function getAdminDomain() {
-  if (process.env.ADMIN_DOMAIN) return process.env.ADMIN_DOMAIN.toLowerCase();
-  if (process.env.APP_DOMAIN) return `admin.${process.env.APP_DOMAIN}`.toLowerCase();
-  return "admin.categent.com";
+  return NextResponse.redirect(getAppUrl(pathname));
 }
 
 function isPassthroughPath(pathname: string) {
