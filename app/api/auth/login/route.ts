@@ -5,6 +5,7 @@ import { verifyPassword } from "@/lib/auth/password";
 import { createSession } from "@/lib/auth/session";
 import { rateLimit } from "@/lib/rate-limit/redis";
 import { safeError } from "@/lib/security/errors";
+import { getAdminUrl, getAppUrl } from "@/lib/utils/url";
 
 const LoginSchema = z.object({
   email: z.string().email(),
@@ -22,9 +23,18 @@ export async function POST(request: Request) {
     await createSession(user.id);
     const organizationId = user.memberships[0]?.organizationId;
     if (organizationId) await prisma.auditLog.create({ data: { organizationId, actorUserId: user.id, action: "login" } });
-    const redirectPath = input.redirectTo && input.redirectTo.startsWith("/") && !input.redirectTo.startsWith("//") ? input.redirectTo : "/dashboard";
-    return NextResponse.redirect(new URL(redirectPath, request.url), 303);
+    const redirectPath = getSafeRedirectPath(input.redirectTo);
+    const redirectUrl = redirectPath.startsWith("/admin") ? getAdminUrl(redirectPath) : getAppUrl(redirectPath);
+    return NextResponse.redirect(redirectUrl, 303);
   } catch (error) {
     return safeError(error, "Login failed");
   }
+}
+
+function getSafeRedirectPath(path?: string) {
+  if (!path || !path.startsWith("/") || path.startsWith("//")) return "/dashboard";
+  if (path === "/admin" || path.startsWith("/admin/")) return path;
+  if (path === "/dashboard" || path.startsWith("/dashboard/")) return path;
+  if (path === "/onboarding") return path;
+  return "/dashboard";
 }
